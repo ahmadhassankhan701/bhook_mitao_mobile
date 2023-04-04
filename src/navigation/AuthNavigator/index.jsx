@@ -4,8 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Intro from "../../screens/Intro";
 import Login from "../../screens/login";
 const Stack = createNativeStackNavigator();
-
 const index = () => {
+	console.log("first");
 	return (
 		<Stack.Navigator
 			initialRouteName="Intro"
