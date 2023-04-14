@@ -1,11 +1,9 @@
 import React from "react";
-import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-// import { AuthProvider } from "./context/auth";
 import { useFonts } from "expo-font";
-import AppNavigator from "./src/navigation/AppNavigator/index";
-import AuthNavigator from "./src/navigation/AuthNavigator/index";
 import { Provider as PaperProvider } from "react-native-paper";
+import { AuthProvider } from "./src/context/AuthContext";
+import Navigation from "./src/navigation";
 export default function App() {
 	const [fontsLoaded] = useFonts({
 		"Montserrat-Regular": require("./src/assets/fonts/Montserrat-Regular.ttf"),
@@ -15,14 +13,14 @@ export default function App() {
 	if (!fontsLoaded) {
 		return null;
 	}
-	const authed = false;
+
 	return (
 		<NavigationContainer>
-			{/* <AuthProvider> */}
-			<PaperProvider>
-				{authed ? <AppNavigator /> : <AuthNavigator />}
-			</PaperProvider>
-			{/* </AuthProvider> */}
+			<AuthProvider>
+				<PaperProvider>
+					<Navigation />
+				</PaperProvider>
+			</AuthProvider>
 		</NavigationContainer>
 	);
 }

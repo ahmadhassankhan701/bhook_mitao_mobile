@@ -4,7 +4,7 @@ const { width, height } = Dimensions.get("screen");
 
 export const colors = {
 	primary: "rgba(255, 171, 13, 1)",
-	secondary: "#fff",
+	secondary: "rgba(196, 196, 196, 0.15)",
 	title: "rgba(0, 0, 0, 1)",
 	desc: "rgba(104, 104, 104, 1)",
 	inputTitleText: "rgba(95, 95, 95, 1)",

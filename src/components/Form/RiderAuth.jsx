@@ -1,13 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
 import InputText from "../Input/InputText";
 import { useState } from "react";
 import { Button } from "react-native-paper";
 import { colors } from "../../utils/theme";
-// import { doc, getDoc } from "firebase/firestore";
-// import { db } from "../../../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const RiderAuth = () => {
+	const { setState } = useContext(AuthContext);
+	const navigation = useNavigation();
 	const [detail, setDetail] = useState({
 		ID: "",
 		Password: "",
@@ -18,52 +24,48 @@ const RiderAuth = () => {
 		setDetail({ ...detail, [name]: val });
 	};
 	const handleSubmit = async () => {
-		return;
-		// setLoading(true);
-		// const docRef = doc(db, `Riders`, `${detail.ID}`);
-		// getDoc(docRef)
-		// 	.then((docSnap) => {
-		// 		if (docSnap.exists()) {
-		// 			setLoading(false);
-		// 			const data = docSnap.data();
-		// 			if (data.riderPassword == detail.Password) {
-		// 				alert("User found");
-		// 				// const user = {
-		// 				// 	userId: datas.riderId,
-		// 				// 	category: "rider",
-		// 				// 	image: datas.image,
-		// 				// 	name: datas.name,
-		// 				// };
-		// 				// const token = datas.riderId;
-		// 				// const stateData = { user, token };
-		// 				// setState({
-		// 				// 	user: stateData.user,
-		// 				// 	token: stateData.token,
-		// 				// });
-		// 				// window.localStorage.setItem(
-		// 				// 	"auth",
-		// 				// 	JSON.stringify(stateData)
-		// 				// );
-		// 				// route.push("/user/rider/dashboard");
-		// 			} else {
-		// 				toast.error("Password not Matched!");
-		// 			}
-		// 		} else {
-		// 			setLoading(false);
-		// 			alert("User not found!");
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		toast.error("Exception Occured");
-		// 		setLoading(false);
-		// 		console.log(error);
-		// 	});
+		setLoading(true);
+		const docRef = doc(db, `Riders`, `${detail.ID}`);
+		getDoc(docRef)
+			.then((docSnap) => {
+				if (docSnap.exists()) {
+					setLoading(false);
+					const data = docSnap.data();
+					if (data.riderPassword == detail.Password) {
+						const user = {
+							userId: detail.ID,
+							category: "rider",
+							image: data.image,
+							name: data.name,
+						};
+						const stateData = { user };
+						setState({
+							user: stateData.user,
+						});
+						AsyncStorage.setItem(
+							"bhook_auth",
+							JSON.stringify(stateData)
+						);
+						navigation.navigate("Homepage");
+					} else {
+						toast.error("Password not Matched!");
+					}
+				} else {
+					setLoading(false);
+					alert("User not found!");
+				}
+			})
+			.catch((error) => {
+				toast.error("Exception Occured");
+				setLoading(false);
+				console.log(error);
+			});
 	};
 	return (
 		<View>
 			<InputText
 				title={"ID"}
-				icon={"account"}
+				icon={"badge-account"}
 				handleChange={handleChange}
 			/>
 			<InputText
@@ -90,6 +92,11 @@ const RiderAuth = () => {
 						backgroundColor: colors.primary,
 					}}
 					loading={loading}
+					disabled={
+						detail.ID == "" ||
+						detail.Password == "" ||
+						loading
+					}
 				>
 					Submit
 				</Button>

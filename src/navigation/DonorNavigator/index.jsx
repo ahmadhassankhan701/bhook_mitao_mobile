@@ -1,29 +1,17 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Intro from "../../screens/Intro";
-import Login from "../../screens/login";
+import Homepage from "../../screens/Protected/Donor/Homepage";
+
 const Stack = createNativeStackNavigator();
+
 const index = () => {
 	return (
 		<Stack.Navigator
-			initialRouteName="Intro"
+			initialRouteName="Homepage"
 			screenOptions={{ headerShown: false }}
 		>
-			<Stack.Screen
-				name="Intro"
-				component={Intro}
-				options={() => ({
-					headerShown: false,
-				})}
-			/>
-			<Stack.Screen
-				name="login"
-				component={Login}
-				options={() => ({
-					headerShown: false,
-				})}
-			/>
+			<Stack.Screen name="Homepage" component={Homepage} />
 		</Stack.Navigator>
 	);
 };
