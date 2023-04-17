@@ -6,6 +6,7 @@
 		"orientation": "portrait",
 		"icon": "./src/assets/splash.png",
 		"userInterfaceStyle": "light",
+		"scheme": "medico",
 		"splash": {
 			"image": "./src/assets/splash.png",
 			"resizeMode": "cover",
@@ -22,10 +23,16 @@
 			"adaptiveIcon": {
 				"foregroundImage": "./src/assets/splash.png",
 				"backgroundColor": "#FFFFFF"
-			}
+			},
+			"package": "com.example.medico"
 		},
 		"web": {
 			"favicon": "./src/assets/splash.png"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "78467481-e22a-493c-be75-32d255e3124e"
+			}
 		}
 	}
 }

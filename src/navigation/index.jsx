@@ -11,8 +11,7 @@ const index = () => {
 		state.user.category == "rider" ? (
 			<RiderNavigator />
 		) : state.user.category == "donor" ? (
-			// <DonorNavigator />
-			<></>
+			<DonorNavigator />
 		) : (
 			// <SupplierNavigator />
 			<></>

@@ -110,6 +110,7 @@ const DonorAuth = () => {
 								width: 150,
 								marginVertical: 10,
 								backgroundColor: colors.primary,
+								color: "white",
 							}}
 							loading={loading}
 							disabled={
@@ -120,6 +121,31 @@ const DonorAuth = () => {
 						>
 							Submit
 						</Button>
+					</View>
+					<View
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							marginVertical: 5,
+							marginHorizontal: 10,
+						}}
+					>
+						<Text>Not a member?</Text>
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate("DonorRegister")
+							}
+						>
+							<Text
+								style={{
+									paddingHorizontal: 5,
+									color: "#4285f4",
+								}}
+							>
+								Register
+							</Text>
+						</TouchableOpacity>
 					</View>
 					<View
 						style={{

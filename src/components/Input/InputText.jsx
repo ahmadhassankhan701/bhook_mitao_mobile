@@ -6,6 +6,7 @@ import { Sizes, colors } from "../../utils/theme";
 const InputText = ({
 	title,
 	icon,
+	name,
 	handleChange,
 	showPassword,
 	setShowPassword,
@@ -16,7 +17,7 @@ const InputText = ({
 				label={title}
 				left={<TextInput.Icon icon={icon} />}
 				right={
-					title == "Password" && (
+					title == "Password *" && (
 						<TextInput.Icon
 							onPress={() => setShowPassword(!showPassword)}
 							icon={"eye"}
@@ -33,9 +34,9 @@ const InputText = ({
 				activeOutlineColor={colors.primary}
 				selectionColor={colors.desc}
 				theme={{ roundness: 30 }}
-				onChangeText={(text) => handleChange(title, text)}
+				onChangeText={(text) => handleChange(name, text)}
 				secureTextEntry={
-					title == "Password" && !showPassword
+					title == "Password *" && !showPassword
 				}
 			/>
 		</View>
