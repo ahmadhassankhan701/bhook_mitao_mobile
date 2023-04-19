@@ -127,13 +127,16 @@ const Account = ({ navigation }) => {
 		await updateDoc(riderDoc, {
 			image: img,
 		});
-		const as = JSON.parse(
-			await AsyncStorage.getItem("bhook_auth")
-		);
-		as.user.image = img;
+		const userData = {
+			userId: state.user.userId,
+			category: "rider",
+			image: img,
+			name: rider.name,
+		};
+		const stateData = { userData };
 		await AsyncStorage.setItem(
 			"bhook_auth",
-			JSON.stringify(as)
+			JSON.stringify(stateData)
 		);
 	};
 	return (

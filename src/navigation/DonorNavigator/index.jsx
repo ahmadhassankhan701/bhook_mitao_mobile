@@ -5,6 +5,7 @@ import Homepage from "../../screens/Protected/Donor/Homepage";
 import Activity from "../../screens/Protected/Donor/Activity";
 import Account from "../../screens/Protected/Donor/Account";
 import Donate from "../../screens/Protected/Donor/Donate";
+import Reset from "../../screens/Protected/Donor/Reset";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ const index = () => {
 				/>
 				<Stack.Screen name="Donate" component={Donate} />
 				<Stack.Screen name="Account" component={Account} />
+				<Stack.Screen name="Reset" component={Reset} />
 			</Stack.Navigator>
 		</>
 	);

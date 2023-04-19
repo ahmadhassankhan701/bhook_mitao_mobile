@@ -17,7 +17,8 @@ const InputText = ({
 				label={title}
 				left={<TextInput.Icon icon={icon} />}
 				right={
-					title == "Password *" && (
+					(title == "Password *" ||
+						title == "New Password *") && (
 						<TextInput.Icon
 							onPress={() => setShowPassword(!showPassword)}
 							icon={"eye"}
@@ -36,7 +37,9 @@ const InputText = ({
 				theme={{ roundness: 30 }}
 				onChangeText={(text) => handleChange(name, text)}
 				secureTextEntry={
-					title == "Password *" && !showPassword
+					(title == "Password *" ||
+						title == "New Password *") &&
+					!showPassword
 				}
 			/>
 		</View>

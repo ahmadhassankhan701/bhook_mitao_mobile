@@ -229,161 +229,160 @@ const DonorRegister = ({ navigation }) => {
 					Platform.OS === "ios" ? "padding" : "height"
 				}
 			>
-				<ScrollView showsVerticalScrollIndicator={false}>
-					<View>
-						<InputText
-							title={"Name *"}
-							name={"name"}
-							icon={"account"}
-							handleChange={handleChange}
-						/>
-						{error.nameError != "" && (
-							<Text
-								style={{
-									color: "red",
-									textAlign: "center",
-								}}
-							>
-								{error.nameError}
-							</Text>
-						)}
-						<InputText
-							title={"Email *"}
-							name={"email"}
-							icon={"badge-account"}
-							handleChange={handleChange}
-						/>
-						{error.emailError != "" && (
-							<Text
-								style={{
-									color: "red",
-									textAlign: "center",
-								}}
-							>
-								{error.emailError}
-							</Text>
-						)}
-						<InputText
-							title={"Password *"}
-							name={"password"}
-							icon={"shield-key"}
-							handleChange={handleChange}
-							showPassword={showPassword}
-							setShowPassword={setShowPassword}
-						/>
-						{error.passwordError != "" && (
-							<Text
-								style={{
-									color: "red",
-									textAlign: "center",
-								}}
-							>
-								{error.passwordError}
-							</Text>
-						)}
-						<View
+				<View>
+					<InputText
+						title={"Name *"}
+						name={"name"}
+						icon={"account"}
+						handleChange={handleChange}
+					/>
+					{error.nameError != "" && (
+						<Text
 							style={{
-								display: "flex",
-								justifyContent: "center",
-								alignItems: "center",
+								color: "red",
+								textAlign: "center",
 							}}
 						>
-							<Button
-								icon="camera"
-								mode="contained"
-								onPress={handleSubmit}
+							{error.nameError}
+						</Text>
+					)}
+					<InputText
+						title={"Email *"}
+						name={"email"}
+						icon={"badge-account"}
+						handleChange={handleChange}
+					/>
+					{error.emailError != "" && (
+						<Text
+							style={{
+								color: "red",
+								textAlign: "center",
+							}}
+						>
+							{error.emailError}
+						</Text>
+					)}
+					<InputText
+						title={"Password *"}
+						name={"password"}
+						icon={"shield-key"}
+						handleChange={handleChange}
+						showPassword={showPassword}
+						setShowPassword={setShowPassword}
+					/>
+					{error.passwordError != "" && (
+						<Text
+							style={{
+								color: "red",
+								textAlign: "center",
+							}}
+						>
+							{error.passwordError}
+						</Text>
+					)}
+					<View
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<Button
+							icon="camera"
+							mode="contained"
+							onPress={handleSubmit}
+							style={{
+								width: 150,
+								marginVertical: 10,
+								backgroundColor: colors.primary,
+								color: "white",
+							}}
+							loading={loading}
+						>
+							Submit
+						</Button>
+					</View>
+					<View
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							marginVertical: 5,
+							marginHorizontal: 10,
+						}}
+					>
+						<Text>Already a member?</Text>
+						<TouchableOpacity
+							onPress={() =>
+								navigation.navigate("login", {
+									categ: "donor",
+								})
+							}
+						>
+							<Text
 								style={{
-									width: 150,
-									marginVertical: 10,
-									backgroundColor: colors.primary,
+									paddingHorizontal: 5,
+									color: "#4285f4",
+								}}
+							>
+								Sign In
+							</Text>
+						</TouchableOpacity>
+					</View>
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							alignSelf: "center",
+						}}
+					>
+						<View
+							style={{
+								width: 120,
+								height: 1,
+								backgroundColor: "gray",
+							}}
+						/>
+						<View>
+							<Text
+								style={{
+									width: 50,
+									textAlign: "center",
+									backgroundColor: `${colors.primary}`,
+									borderRadius: 100,
+									padding: 15,
 									color: "white",
 								}}
-								loading={loading}
 							>
-								Submit
-							</Button>
+								OR
+							</Text>
 						</View>
 						<View
 							style={{
-								display: "flex",
-								flexDirection: "row",
-								alignItems: "center",
-								marginVertical: 5,
-								marginHorizontal: 10,
+								width: 120,
+								height: 1,
+								backgroundColor: "gray",
 							}}
-						>
-							<Text>Already a member?</Text>
-							<TouchableOpacity
-								onPress={() =>
-									navigation.navigate("login", {
-										categ: "donor",
-									})
-								}
-							>
-								<Text
-									style={{
-										paddingHorizontal: 5,
-										color: "#4285f4",
-									}}
-								>
-									Sign In
-								</Text>
-							</TouchableOpacity>
-						</View>
-						<View
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-								alignSelf: "center",
-							}}
-						>
-							<View
-								style={{
-									width: 120,
-									height: 1,
-									backgroundColor: "gray",
-								}}
-							/>
-							<View>
-								<Text
-									style={{
-										width: 50,
-										textAlign: "center",
-										backgroundColor: `${colors.primary}`,
-										borderRadius: 100,
-										padding: 15,
-										color: "white",
-									}}
-								>
-									OR
-								</Text>
-							</View>
-							<View
-								style={{
-									width: 120,
-									height: 1,
-									backgroundColor: "gray",
-								}}
-							/>
-						</View>
-						<View>
-							<TouchableOpacity
-								onPress={() => promptAsync()}
-								disabled={!request}
-							>
-								<Image
-									source={require("../assets/googleLogin.png")}
-									style={{
-										width: 210,
-										alignSelf: "center",
-										borderRadius: 10,
-										marginVertical: 5,
-									}}
-								/>
-							</TouchableOpacity>
-						</View>
+						/>
 					</View>
-				</ScrollView>
+					<View>
+						<TouchableOpacity
+							onPress={() => promptAsync()}
+							disabled={!request}
+							style={styles.google_btn}
+						>
+							<View style={styles.google_icon_wrapper}>
+								<Image
+									style={styles.google_icon}
+									source={require("../assets/googleLogin.png")}
+								/>
+							</View>
+							<Text style={styles.btn_text}>
+								Sign up with google
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
 			</KeyboardAvoidingView>
 		</View>
 	);
@@ -391,4 +390,43 @@ const DonorRegister = ({ navigation }) => {
 
 export default DonorRegister;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	google_btn: {
+		width: 200,
+		height: 42,
+		backgroundColor: "#4285f4",
+		borderRadius: 2,
+		display: "flex",
+		flexDirection: "row",
+		boxShadow: "0 3px 4px 0 rgba(0, 0, 0, 0.25)",
+		alignItems: "center",
+		alignSelf: "center",
+		marginVertical: "5%",
+	},
+	google_icon_wrapper: {
+		flex: 1,
+		marginTop: 1,
+		marginLeft: 1,
+		width: 40,
+		height: 40,
+		borderRadius: 2,
+		backgroundColor: "#fff",
+	},
+	google_icon: {
+		marginTop: 11,
+		marginLeft: 11,
+		width: 20,
+		height: 20,
+	},
+	btn_text: {
+		flex: 4,
+		alignSelf: "center",
+		margin: 11,
+		marginRight: 11,
+		fontSize: 14,
+		fontWeight: "bold",
+		fontFamily: "Roboto",
+		letterSpacing: 0.2,
+		color: "#fff",
+	},
+});

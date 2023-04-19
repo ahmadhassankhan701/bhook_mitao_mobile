@@ -64,12 +64,12 @@ const RiderAuth = () => {
 	return (
 		<View>
 			<InputText
-				title={"ID"}
+				title={"ID *"}
 				icon={"badge-account"}
 				handleChange={handleChange}
 			/>
 			<InputText
-				title={"Password"}
+				title={"Password *"}
 				icon={"shield-key"}
 				handleChange={handleChange}
 				showPassword={showPassword}

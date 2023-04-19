@@ -20,6 +20,7 @@ export const signUpGoogle = async (accessToken, categ) => {
 	if (docSnap.exists()) {
 		userData = {
 			userId: user.uid,
+			provider: "social",
 			...docSnap.data(),
 		};
 	} else {
@@ -31,6 +32,7 @@ export const signUpGoogle = async (accessToken, categ) => {
 		});
 		userData = {
 			userId: user.uid,
+			provider: "social",
 			category: categ,
 			name: user.displayName,
 			email: user.email,
