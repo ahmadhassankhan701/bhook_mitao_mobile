@@ -10,14 +10,17 @@ import { Sizes } from "../../utils/theme";
 const Done = ({ data, by }) => {
 	return (
 		<View style={{ marginVertical: 5 }}>
-			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
+			{/* <Text>{JSON.stringify(data, null, 4)}</Text> */}
 			<Card style={styles.card}>
 				<Card.Title
-					title={data.name}
-					subtitle={"0" + data.data.phone}
+					title={data.detail.name}
+					subtitle={"0" + data.detail.phone}
 					left={() => {
 						return (
-							<Avatar.Text size={50} label={data.name[0]} />
+							<Avatar.Text
+								size={50}
+								label={data.detail.name[0]}
+							/>
 						);
 					}}
 					right={() => {
@@ -29,8 +32,8 @@ const Done = ({ data, by }) => {
 					}}
 				/>
 				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text>{data.data.detail}</Text>
-					<Text>{data.data.quantity}</Text>
+					<Text>{data.detail.desc}</Text>
+					<Text>{data.detail.quantity}</Text>
 					<Text>{data.location.address}</Text>
 					{by == "donor" && (
 						<>

@@ -16,12 +16,17 @@ export const Tab = ({
 }) => {
 	const activeScreenColor =
 		screenName === routeName && "orange";
+	const activeMarginBottom =
+		screenName === routeName ? 0 : 0;
 
 	return (
-		<TouchableOpacity onPress={handlePress}>
+		<TouchableOpacity
+			onPress={handlePress}
+			style={{ marginTop: activeMarginBottom }}
+		>
 			<FontAwesome5
 				name={name}
-				size={25}
+				size={20}
 				style={{
 					marginBottom: 3,
 					alignSelf: "center",

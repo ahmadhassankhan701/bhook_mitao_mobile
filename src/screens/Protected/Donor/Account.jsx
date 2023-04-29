@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import Footer from "../../../components/Footer";
+import DonorFooter from "../../../components/Footer/DonorFooter";
 import { Sizes, colors } from "../../../utils/theme";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
@@ -238,7 +238,8 @@ const Account = ({ navigation }) => {
 					)}
 				</View>
 			</View>
-			<Footer />
+			{/* <Footer /> */}
+			<DonorFooter />
 		</View>
 	);
 };

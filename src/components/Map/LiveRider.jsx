@@ -4,8 +4,9 @@ import MapView, { Marker } from "react-native-maps";
 import { Sizes } from "../../utils/theme";
 import { Image } from "react-native";
 
-const Basic = ({ location }) => {
+const LiveRider = ({ riderLocation }) => {
 	const mapView = useRef();
+
 	const initialRegion = {
 		latitude: 31.4809172029034,
 		longitude: 74.32941843381401,
@@ -18,8 +19,8 @@ const Basic = ({ location }) => {
 				ref={mapView}
 				initialRegion={initialRegion}
 				region={{
-					latitude: location.currentLocation.lat,
-					longitude: location.currentLocation.lng,
+					latitude: riderLocation.currentLocation.lat,
+					longitude: riderLocation.currentLocation.lng,
 					latitudeDelta: 0.01,
 					longitudeDelta: 0.01,
 				}}
@@ -27,8 +28,8 @@ const Basic = ({ location }) => {
 			>
 				<Marker
 					coordinate={{
-						latitude: location.currentLocation.lat,
-						longitude: location.currentLocation.lng,
+						latitude: riderLocation.currentLocation.lat,
+						longitude: riderLocation.currentLocation.lng,
 					}}
 				>
 					<Image
@@ -45,12 +46,12 @@ const Basic = ({ location }) => {
 	);
 };
 
-export default Basic;
+export default LiveRider;
 
 const styles = StyleSheet.create({
 	map: {
 		width: Sizes.width - 25,
-		height: 181,
+		height: 500,
 		borderRadius: 30,
 		marginVertical: 10,
 	},
