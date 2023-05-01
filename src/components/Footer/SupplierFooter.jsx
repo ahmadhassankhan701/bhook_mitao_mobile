@@ -16,12 +16,17 @@ export const Tab = ({
 }) => {
 	const activeScreenColor =
 		screenName === routeName && "orange";
+	const activeMarginBottom =
+		screenName === routeName ? 0 : 0;
 
 	return (
-		<TouchableOpacity onPress={handlePress}>
+		<TouchableOpacity
+			onPress={handlePress}
+			style={{ marginTop: activeMarginBottom }}
+		>
 			<FontAwesome5
 				name={name}
-				size={25}
+				size={20}
 				style={{
 					marginBottom: 3,
 					alignSelf: "center",
@@ -35,7 +40,7 @@ export const Tab = ({
 	);
 };
 
-export default function index() {
+export default function SupplierFooter() {
 	const navigation = useNavigation();
 	const route = useRoute();
 
@@ -60,12 +65,26 @@ export default function index() {
 					routeName={route.name}
 				/>
 				<Tab
-					text="Activity"
+					text="Requests"
 					name="tasks"
 					handlePress={() =>
-						navigation.navigate("Activity")
+						navigation.navigate("Requests")
 					}
 					screenName="Activity"
+					routeName={route.name}
+				/>
+				<Tab
+					text="Events"
+					name="calendar-alt"
+					handlePress={() => navigation.navigate("Events")}
+					screenName="Events"
+					routeName={route.name}
+				/>
+				<Tab
+					text="Riders"
+					name="biking"
+					handlePress={() => navigation.navigate("Riders")}
+					screenName="Riders"
 					routeName={route.name}
 				/>
 				<Tab

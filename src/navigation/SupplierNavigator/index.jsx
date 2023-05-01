@@ -2,8 +2,15 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Homepage from "../../screens/Protected/Supplier/Homepage";
-import { IconButton } from "react-native-paper";
-import { colors } from "../../utils/theme";
+import Requests from "../../screens/Protected/Supplier/Requests";
+import Events from "../../screens/Protected/Supplier/Events";
+import AddEvents from "../../screens/Protected/Supplier/AddEvents";
+import EditEvents from "../../screens/Protected/Supplier/EditEvents";
+import Riders from "../../screens/Protected/Supplier/Riders";
+import Account from "../../screens/Protected/Supplier/Account";
+import Reset from "../../screens/Protected/Supplier/Reset";
+import AddRider from "../../screens/Protected/Supplier/AddRider";
+import EditRider from "../../screens/Protected/Supplier/EditRider";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,22 +20,24 @@ const index = () => {
 			initialRouteName="Homepage"
 			screenOptions={{ headerShown: false }}
 		>
+			<Stack.Screen name="Homepage" component={Homepage} />
+			<Stack.Screen name="Requests" component={Requests} />
+			<Stack.Screen name="Events" component={Events} />
 			<Stack.Screen
-				name="Homepage"
-				component={Homepage}
-				options={({ navigation, route }) => ({
-					headerShown: true,
-					headerTitle: "",
-					headerTransparent: false,
-					headerRight: () => (
-						<IconButton
-							icon="logout"
-							iconColor={colors.primary}
-							size={30}
-							onPress={() => {}}
-						/>
-					),
-				})}
+				name="AddEvents"
+				component={AddEvents}
+			/>
+			<Stack.Screen
+				name="EditEvents"
+				component={EditEvents}
+			/>
+			<Stack.Screen name="Riders" component={Riders} />
+			<Stack.Screen name="Account" component={Account} />
+			<Stack.Screen name="Reset" component={Reset} />
+			<Stack.Screen name="AddRider" component={AddRider} />
+			<Stack.Screen
+				name="EditRider"
+				component={EditRider}
 			/>
 		</Stack.Navigator>
 	);

@@ -41,3 +41,32 @@ export const signUpGoogle = async (accessToken, categ) => {
 	}
 	return userData;
 };
+export const signUpGoogleSup = async (
+	accessToken,
+	categ
+) => {
+	const credential = GoogleAuthProvider.credential(
+		null,
+		accessToken
+	);
+	const { user } = await signInWithCredential(
+		auth,
+		credential
+	);
+	const docRef = doc(db, `Auth/${categ}/users`, user.uid);
+	const docSnap = await getDoc(docRef);
+	let userData = {};
+	if (docSnap.exists()) {
+		userData = {
+			userId: user.uid,
+			provider: "social",
+			registered: true,
+			...docSnap.data(),
+		};
+	} else {
+		userData = {
+			registered: false,
+		};
+	}
+	return userData;
+};

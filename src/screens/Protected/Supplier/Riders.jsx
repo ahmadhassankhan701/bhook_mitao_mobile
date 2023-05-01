@@ -6,17 +6,20 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Sizes, colors } from "../../../utils/theme";
-import Done from "../../../components/Card/Done";
 import {
 	ActivityIndicator,
+	Button,
 	IconButton,
 	Modal,
 	Portal,
 } from "react-native-paper";
 import {
-	collectionGroup,
+	collection,
+	deleteDoc,
+	doc,
 	getDocs,
 	limit,
+	onSnapshot,
 	orderBy,
 	query,
 	startAfter,
@@ -28,9 +31,10 @@ import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
-const Homepage = ({ navigation }) => {
+import RidersCard from "../../../components/Card/RidersCard";
+const Riders = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
-	const [donations, setDonations] = useState([]);
+	const [riders, setRiders] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -45,47 +49,43 @@ const Homepage = ({ navigation }) => {
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
-		const donations = query(
-			collectionGroup(db, "food"),
-			where("assignedBy.orgId", "==", `${userId}`),
-			where("status", "==", "done"),
+		getRiders();
+	}, []);
+	const getRiders = async () => {
+		const riders = query(
+			collection(db, "Riders"),
+			where("userId", "==", `${userId}`),
 			orderBy("createdAt", "desc"),
 			limit(2)
 		);
 		setLoading(true);
-		getDocs(donations)
-			.then((querySnapshot) => {
-				let items = [];
-				if (querySnapshot.size == 0) {
-					setLoading(false);
-					setNextBtn(false);
-				} else {
-					setLoading(false);
-					setNextBtn(true);
-					querySnapshot.forEach((doc) => {
-						items.push({ key: doc.id, ...doc.data() });
-					});
-				}
-				setDonations(items);
-			})
-			.catch((error) => {
-				setLoading(true);
-				console.log(error);
-			});
-	}, []);
+		onSnapshot(riders, (querySnapshot) => {
+			let items = [];
+			if (querySnapshot.size == 0) {
+				setLoading(false);
+				setNextBtn(false);
+			} else {
+				setLoading(false);
+				setNextBtn(true);
+				querySnapshot.forEach((doc) => {
+					items.push({ key: doc.id, ...doc.data() });
+				});
+			}
+			setRiders(items);
+		});
+	};
 	const showNext = ({ item }) => {
 		const fetchNextData = async () => {
-			const donations = query(
-				collectionGroup(db, "food"),
-				where("assignedBy.orgId", "==", `${userId}`),
-				where("status", "==", "done"),
+			const riders = query(
+				collection(db, "Riders"),
+				where("userId", "==", `${userId}`),
 				orderBy("createdAt", "desc"),
 				startAfter(item.createdAt),
 				limit(2)
 			);
 			try {
 				setLoading(true);
-				const querySnapshot = await getDocs(donations);
+				const querySnapshot = await getDocs(riders);
 				if (querySnapshot.size == 0) {
 					setLoading(false);
 					setNextBtn(false);
@@ -93,8 +93,8 @@ const Homepage = ({ navigation }) => {
 					setLoading(false);
 					setNextBtn(true);
 					querySnapshot.forEach((doc) => {
-						setDonations((donations) => [
-							...donations,
+						setRiders((riders) => [
+							...riders,
 							{ key: doc.id, ...doc.data() },
 						]);
 					});
@@ -111,6 +111,15 @@ const Homepage = ({ navigation }) => {
 			setState({ ...state, user: null });
 			navigation.navigate("Intro");
 		} catch (error) {
+			console.log(error);
+		}
+	};
+	const handleDelete = async (id) => {
+		try {
+			await deleteDoc(doc(db, `Riders`, `${id}`));
+			alert("Rider Deleted");
+		} catch (error) {
+			alert("Deletion Failed");
 			console.log(error);
 		}
 	};
@@ -158,28 +167,52 @@ const Homepage = ({ navigation }) => {
 			</Portal>
 			<View>
 				<View style={styles.center}>
-					<Text
+					<View
 						style={{
-							color: "#000000",
-							marginVertical: 5,
-							fontSize: 18,
-							fontWeight: "600",
-							lineHeight: 27,
+							paddingTop: 10,
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-between",
+							width: Sizes.width - 20,
 						}}
 					>
-						Donations Done
-					</Text>
+						<Text
+							style={{
+								color: "#000000",
+								marginVertical: 5,
+								fontSize: 18,
+								fontWeight: "600",
+								lineHeight: 27,
+							}}
+						>
+							Riders
+						</Text>
+						<Text>
+							<Button
+								buttonColor={colors.primary}
+								icon={"plus"}
+								mode="contained"
+								onPress={() =>
+									navigation.navigate("AddRider")
+								}
+							>
+								Add Rider
+							</Button>
+						</Text>
+					</View>
+
 					<ScrollView
 						style={{ height: Sizes.height - 230 }}
 						showsVerticalScrollIndicator={false}
 					>
 						<View>
-							{Object.keys(donations).length != 0 ? (
-								donations.map((val) => (
-									<Done
-										by={"donor"}
+							{Object.keys(riders).length != 0 ? (
+								riders.map((val) => (
+									<RidersCard
 										data={val}
 										key={val.key}
+										handleDelete={handleDelete}
 									/>
 								))
 							) : (
@@ -191,9 +224,9 @@ const Homepage = ({ navigation }) => {
 										alignItems: "center",
 									}}
 								>
-									<Text>No Donations Done Yet </Text>
+									<Text>No Riders Added Yet </Text>
 									<Text>
-										<IconButton icon={"charity"} />{" "}
+										<IconButton icon={"racing-helmet"} />{" "}
 									</Text>
 								</View>
 							)}
@@ -221,9 +254,7 @@ const Homepage = ({ navigation }) => {
 											iconColor="white"
 											onPress={() =>
 												showNext({
-													item: donations[
-														donations.length - 1
-													],
+													item: riders[riders.length - 1],
 												})
 											}
 										/>
@@ -255,4 +286,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Homepage;
+export default Riders;

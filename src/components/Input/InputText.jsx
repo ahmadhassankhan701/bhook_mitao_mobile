@@ -44,7 +44,9 @@ const InputText = ({
 			multiline={name == "desc" ? true : false}
 			numberOfLines={name == "desc" ? 3 : 1}
 			keyboardType={
-				name == "phone" || name == "quantity"
+				name == "phone" ||
+				name == "quantity" ||
+				name == "zip"
 					? "numeric"
 					: "default"
 			}

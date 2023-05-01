@@ -28,7 +28,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
-const Homepage = ({ navigation }) => {
+const Requests = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
@@ -255,4 +255,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Homepage;
+export default Requests;

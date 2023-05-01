@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Intro from "../../screens/Intro";
 import Login from "../../screens/login";
 import DonorRegister from "../../screens/DonorRegister";
+import SupplierRegister from "../../screens/SupplierRegister";
 const Stack = createNativeStackNavigator();
 const index = () => {
 	return (
@@ -28,6 +29,13 @@ const index = () => {
 			<Stack.Screen
 				name="DonorRegister"
 				component={DonorRegister}
+				options={() => ({
+					headerShown: false,
+				})}
+			/>
+			<Stack.Screen
+				name="SupplierRegister"
+				component={SupplierRegister}
 				options={() => ({
 					headerShown: false,
 				})}

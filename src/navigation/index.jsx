@@ -13,8 +13,7 @@ const index = () => {
 		) : state.user.category == "donor" ? (
 			<DonorNavigator />
 		) : (
-			// <SupplierNavigator />
-			<></>
+			<SupplierNavigator />
 		)
 	) : (
 		<AuthNavigator />

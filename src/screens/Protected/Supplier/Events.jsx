@@ -6,31 +6,37 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Sizes, colors } from "../../../utils/theme";
-import Done from "../../../components/Card/Done";
 import {
 	ActivityIndicator,
+	Button,
 	IconButton,
 	Modal,
 	Portal,
 } from "react-native-paper";
 import {
+	collection,
 	collectionGroup,
+	deleteDoc,
+	doc,
 	getDocs,
 	limit,
+	onSnapshot,
 	orderBy,
 	query,
 	startAfter,
 	where,
 } from "firebase/firestore";
-import { db } from "../../../../firebase";
+import { db, storage } from "../../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
-const Homepage = ({ navigation }) => {
+import EventsCard from "../../../components/Card/EventsCard";
+import { deleteObject, ref } from "firebase/storage";
+const Events = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
-	const [donations, setDonations] = useState([]);
+	const [events, setEvents] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -45,47 +51,43 @@ const Homepage = ({ navigation }) => {
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
-		const donations = query(
-			collectionGroup(db, "food"),
-			where("assignedBy.orgId", "==", `${userId}`),
-			where("status", "==", "done"),
+		getEvents();
+	}, []);
+	const getEvents = async () => {
+		const events = query(
+			collectionGroup(db, "event"),
+			where("orgId", "==", `${userId}`),
 			orderBy("createdAt", "desc"),
 			limit(2)
 		);
 		setLoading(true);
-		getDocs(donations)
-			.then((querySnapshot) => {
-				let items = [];
-				if (querySnapshot.size == 0) {
-					setLoading(false);
-					setNextBtn(false);
-				} else {
-					setLoading(false);
-					setNextBtn(true);
-					querySnapshot.forEach((doc) => {
-						items.push({ key: doc.id, ...doc.data() });
-					});
-				}
-				setDonations(items);
-			})
-			.catch((error) => {
-				setLoading(true);
-				console.log(error);
-			});
-	}, []);
+		onSnapshot(events, (querySnapshot) => {
+			let items = [];
+			if (querySnapshot.size == 0) {
+				setLoading(false);
+				setNextBtn(false);
+			} else {
+				setLoading(false);
+				setNextBtn(true);
+				querySnapshot.forEach((doc) => {
+					items.push({ key: doc.id, ...doc.data() });
+				});
+			}
+			setEvents(items);
+		});
+	};
 	const showNext = ({ item }) => {
 		const fetchNextData = async () => {
-			const donations = query(
-				collectionGroup(db, "food"),
-				where("assignedBy.orgId", "==", `${userId}`),
-				where("status", "==", "done"),
+			const events = query(
+				collectionGroup(db, "event"),
+				where("orgId", "==", `${userId}`),
 				orderBy("createdAt", "desc"),
 				startAfter(item.createdAt),
 				limit(2)
 			);
 			try {
 				setLoading(true);
-				const querySnapshot = await getDocs(donations);
+				const querySnapshot = await getDocs(events);
 				if (querySnapshot.size == 0) {
 					setLoading(false);
 					setNextBtn(false);
@@ -93,8 +95,8 @@ const Homepage = ({ navigation }) => {
 					setLoading(false);
 					setNextBtn(true);
 					querySnapshot.forEach((doc) => {
-						setDonations((donations) => [
-							...donations,
+						setEvents((events) => [
+							...events,
 							{ key: doc.id, ...doc.data() },
 						]);
 					});
@@ -113,6 +115,25 @@ const Homepage = ({ navigation }) => {
 		} catch (error) {
 			console.log(error);
 		}
+	};
+	const handleDelete = async (orgId, docId, path) => {
+		try {
+			await deleteImages(path);
+			const eventRef = doc(
+				db,
+				`Events/${orgId}/event`,
+				`${docId}`
+			);
+			await deleteDoc(eventRef);
+			alert("Event Deleted");
+		} catch (error) {
+			alert("Deletion Failed");
+			console.log(error);
+		}
+	};
+	const deleteImages = async (path) => {
+		const fileRef = ref(storage, path);
+		await deleteObject(fileRef);
 	};
 	return (
 		<View
@@ -158,28 +179,54 @@ const Homepage = ({ navigation }) => {
 			</Portal>
 			<View>
 				<View style={styles.center}>
-					<Text
+					<View
 						style={{
-							color: "#000000",
-							marginVertical: 5,
-							fontSize: 18,
-							fontWeight: "600",
-							lineHeight: 27,
+							paddingTop: 10,
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-between",
+							width: Sizes.width - 20,
 						}}
 					>
-						Donations Done
-					</Text>
+						<Text
+							style={{
+								color: "#000000",
+								marginVertical: 5,
+								fontSize: 18,
+								fontWeight: "600",
+								lineHeight: 27,
+							}}
+						>
+							Events
+						</Text>
+						<Text>
+							<Button
+								buttonColor={colors.primary}
+								icon={"plus"}
+								mode="contained"
+								onPress={() =>
+									navigation.navigate("AddEvents")
+								}
+							>
+								Add Events
+							</Button>
+						</Text>
+					</View>
+
 					<ScrollView
-						style={{ height: Sizes.height - 230 }}
+						style={{
+							height: Sizes.height - 300,
+						}}
 						showsVerticalScrollIndicator={false}
 					>
 						<View>
-							{Object.keys(donations).length != 0 ? (
-								donations.map((val) => (
-									<Done
-										by={"donor"}
+							{Object.keys(events).length != 0 ? (
+								events.map((val) => (
+									<EventsCard
 										data={val}
 										key={val.key}
+										handleDelete={handleDelete}
 									/>
 								))
 							) : (
@@ -191,9 +238,9 @@ const Homepage = ({ navigation }) => {
 										alignItems: "center",
 									}}
 								>
-									<Text>No Donations Done Yet </Text>
+									<Text>No Events Added Yet </Text>
 									<Text>
-										<IconButton icon={"charity"} />{" "}
+										<IconButton icon={"calendar"} />{" "}
 									</Text>
 								</View>
 							)}
@@ -221,9 +268,7 @@ const Homepage = ({ navigation }) => {
 											iconColor="white"
 											onPress={() =>
 												showNext({
-													item: donations[
-														donations.length - 1
-													],
+													item: events[events.length - 1],
 												})
 											}
 										/>
@@ -255,4 +300,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Homepage;
+export default Events;

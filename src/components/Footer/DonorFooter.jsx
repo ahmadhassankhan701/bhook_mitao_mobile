@@ -56,7 +56,7 @@ export default function DonorFooter() {
 				}}
 			>
 				<Tab
-					text="Homepage"
+					text="Home"
 					name="home"
 					handlePress={() =>
 						navigation.navigate("Homepage")
