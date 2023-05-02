@@ -30,7 +30,7 @@ const DonorMap = ({ location, handleChange }) => {
 		longitudeDelta: 0.01,
 	});
 	Location.setGoogleApiKey(
-		"AIzaSyDke-VqfVjNOppylUpwX96YzOFWsIJ115Y"
+		"AIzaSyCAukR_SsOKADb2N1YmOEyRwFGKWZTwmOo"
 	);
 	const getPermissions = async () => {
 		let { status } =
@@ -164,7 +164,7 @@ const DonorMap = ({ location, handleChange }) => {
 						}
 					}}
 					query={{
-						key: "AIzaSyDke-VqfVjNOppylUpwX96YzOFWsIJ115Y",
+						key: "AIzaSyCAukR_SsOKADb2N1YmOEyRwFGKWZTwmOo",
 						language: "en",
 						types: "establishment",
 						radius: 8000,

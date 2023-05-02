@@ -2,25 +2,33 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import {
 	Avatar,
-	Button,
 	Card,
-	FAB,
 	IconButton,
 } from "react-native-paper";
 import { Sizes } from "../../utils/theme";
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import { useNavigation } from "@react-navigation/native";
 
-const AssignedCard = ({ data, navigation }) => {
+const AssignedCard = ({
+	data,
+	handleStart,
+	handleDeny,
+	completeDonation,
+	denyloading,
+}) => {
+	const navigation = useNavigation();
 	return (
 		<View style={{ marginVertical: 5 }}>
-			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
+			{/* <Text>{JSON.stringify(data, null, 4)}</Text> */}
 			<Card style={styles.card}>
 				<Card.Title
-					title={data.name}
-					subtitle={data.data.phone}
+					title={data.detail.name}
+					subtitle={"Donor Phone: 0" + data.detail.phone}
 					left={() => {
 						return (
-							<Avatar.Text size={50} label={data.name[0]} />
+							<Avatar.Text
+								size={50}
+								label={data.detail.name[0]}
+							/>
 						);
 					}}
 					right={() => {
@@ -33,13 +41,13 @@ const AssignedCard = ({ data, navigation }) => {
 				/>
 				<Card.Content style={{ paddingHorizontal: 25 }}>
 					<Text variant="titleLarge">
-						{data.data.detail}
+						For Persons: {data.detail.quantity}
 					</Text>
 					<Text variant="bodyMedium">
-						{data.data.quantity}
+						Desc: {data.detail.desc}
 					</Text>
 					<Text variant="bodyMedium">
-						{data.location.address}
+						Address: {data.location.address}
 					</Text>
 				</Card.Content>
 				<Card.Actions
@@ -50,7 +58,7 @@ const AssignedCard = ({ data, navigation }) => {
 						alignItems: "center",
 					}}
 				>
-					{data.status == "Started" ? (
+					{data.status == "started" ? (
 						<>
 							<IconButton
 								icon={"check-circle"}
@@ -58,6 +66,9 @@ const AssignedCard = ({ data, navigation }) => {
 								mode="contained"
 								containerColor={"green"}
 								size={18}
+								onPress={() =>
+									completeDonation(data.key, data.userId)
+								}
 							/>
 						</>
 					) : data.status == "pending" ? (
@@ -89,13 +100,22 @@ const AssignedCard = ({ data, navigation }) => {
 								mode="contained"
 								containerColor={"green"}
 								size={18}
+								onPress={() =>
+									handleStart(data.key, data.userId)
+								}
 							/>
 							<IconButton
-								icon={"close-circle"}
+								icon={
+									denyloading ? "reload" : "close-circle"
+								}
 								iconColor="white"
 								mode="contained"
 								containerColor={"red"}
 								size={18}
+								disabled={denyloading}
+								onPress={() =>
+									handleDeny(data.key, data.userId)
+								}
 							/>
 						</>
 					)}

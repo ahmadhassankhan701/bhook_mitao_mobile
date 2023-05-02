@@ -15,7 +15,7 @@ export const Tab = ({
 	routeName,
 }) => {
 	const activeScreenColor =
-		screenName === routeName && "orange";
+		screenName === routeName ? "orange" : "gray";
 
 	return (
 		<TouchableOpacity onPress={handlePress}>

@@ -15,7 +15,7 @@ export const Tab = ({
 	routeName,
 }) => {
 	const activeScreenColor =
-		screenName === routeName && "orange";
+		screenName === routeName ? "orange" : "gray";
 	const activeMarginBottom =
 		screenName === routeName ? 0 : 0;
 
@@ -33,7 +33,12 @@ export const Tab = ({
 				}}
 				color={activeScreenColor}
 			/>
-			<Text style={{ color: activeScreenColor }}>
+			<Text
+				style={{
+					color: activeScreenColor,
+					fontSize: 12,
+				}}
+			>
 				{text}
 			</Text>
 		</TouchableOpacity>
@@ -70,7 +75,7 @@ export default function SupplierFooter() {
 					handlePress={() =>
 						navigation.navigate("Requests")
 					}
-					screenName="Activity"
+					screenName="Requests"
 					routeName={route.name}
 				/>
 				<Tab

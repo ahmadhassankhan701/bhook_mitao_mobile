@@ -125,7 +125,7 @@ const FoodFinal = ({ route, navigation }) => {
 					handleChange={handleChange}
 				/>
 			</View>
-			<View>
+			<View style={{ marginTop: 10 }}>
 				<Button
 					icon={"charity"}
 					mode="contained"

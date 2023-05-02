@@ -6,7 +6,7 @@ import {
 	Card,
 	IconButton,
 } from "react-native-paper";
-import { Sizes } from "../../utils/theme";
+import { Sizes, colors } from "../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
 
 const DonorActivity = ({
@@ -14,6 +14,7 @@ const DonorActivity = ({
 	handleDelete,
 	loading,
 	completeDonation,
+	completeLoading,
 }) => {
 	const navigation = useNavigation();
 	return (
@@ -43,7 +44,7 @@ const DonorActivity = ({
 					<Text>Desc: {data.detail.desc}</Text>
 					<Text>For Persons: {data.detail.quantity}</Text>
 					<Text>Address: {data.location.address}</Text>
-					{/* {data.status == "started" && (
+					{data.status == "started" && (
 						<>
 							<Text>
 								Rider Name: {data.assignedTo.name}
@@ -52,7 +53,7 @@ const DonorActivity = ({
 								Rider Phone: 0{data.assignedTo.phone}
 							</Text>
 						</>
-					)} */}
+					)}
 				</Card.Content>
 				<Card.Actions>
 					{data.status == "requested" ? (
@@ -83,15 +84,18 @@ const DonorActivity = ({
 						</>
 					) : data.status == "started" ? (
 						<IconButton
-							icon={"pin"}
+							icon={"map-marker-radius"}
 							mode="contained"
-							iconColor="red"
-							containerColor="transparent"
+							iconColor="white"
+							containerColor={colors.primary}
 							size={20}
 							onPress={() =>
 								navigation.navigate("TrackRider", {
-									uid: data.userId,
-									docId: data.key,
+									riderId: data.assignedTo.riderId,
+									donorLat:
+										data.location.currentLocation.lat,
+									donorLng:
+										data.location.currentLocation.lng,
 								})
 							}
 						/>
@@ -111,12 +115,12 @@ const DonorActivity = ({
 								mode="contained"
 								buttonColor="green"
 								textColor="white"
-								onClick={() =>
+								onPress={() =>
 									completeDonation(data.userId, data.key)
 								}
 								icon={"check-circle"}
-								disabled={loading}
-								loading={loading}
+								disabled={completeLoading}
+								loading={completeLoading}
 							>
 								Confirm
 							</Button>

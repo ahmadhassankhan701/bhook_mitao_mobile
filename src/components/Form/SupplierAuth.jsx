@@ -139,6 +139,7 @@ const SupplierAuth = () => {
 						email: res.email,
 						image: res.image,
 						name: res.name,
+						city: res.city,
 						provider: "custom",
 					};
 					const stateData = { user };

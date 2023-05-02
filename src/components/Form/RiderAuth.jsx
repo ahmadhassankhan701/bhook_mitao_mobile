@@ -15,8 +15,8 @@ const RiderAuth = () => {
 	const { setState } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const [detail, setDetail] = useState({
-		ID: "",
-		Password: "",
+		id: "",
+		password: "",
 	});
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -24,16 +24,20 @@ const RiderAuth = () => {
 		setDetail({ ...detail, [name]: val });
 	};
 	const handleSubmit = async () => {
+		if (detail.id == "" || detail.password == "") {
+			alert("Please fill all the fields");
+			return;
+		}
 		setLoading(true);
-		const docRef = doc(db, `Riders`, `${detail.ID}`);
+		const docRef = doc(db, `Riders`, `${detail.id}`);
 		getDoc(docRef)
 			.then((docSnap) => {
 				if (docSnap.exists()) {
 					setLoading(false);
 					const data = docSnap.data();
-					if (data.riderPassword == detail.Password) {
+					if (data.riderPassword == detail.password) {
 						const user = {
-							userId: detail.ID,
+							userId: detail.id,
 							category: "rider",
 							image: data.image,
 							name: data.name,
@@ -48,7 +52,7 @@ const RiderAuth = () => {
 						);
 						navigation.navigate("Homepage");
 					} else {
-						toast.error("Password not Matched!");
+						alert("Password not Matched!");
 					}
 				} else {
 					setLoading(false);
@@ -56,7 +60,7 @@ const RiderAuth = () => {
 				}
 			})
 			.catch((error) => {
-				toast.error("Exception Occured");
+				alert("Exception Occured");
 				setLoading(false);
 				console.log(error);
 			});
@@ -67,13 +71,17 @@ const RiderAuth = () => {
 				title={"ID *"}
 				icon={"badge-account"}
 				handleChange={handleChange}
+				name={"id"}
+				value={detail.id}
 			/>
 			<InputText
 				title={"Password *"}
 				icon={"shield-key"}
+				name={"password"}
 				handleChange={handleChange}
 				showPassword={showPassword}
 				setShowPassword={setShowPassword}
+				value={detail.password}
 			/>
 			<View
 				style={{
@@ -92,11 +100,7 @@ const RiderAuth = () => {
 						backgroundColor: colors.primary,
 					}}
 					loading={loading}
-					disabled={
-						detail.ID == "" ||
-						detail.Password == "" ||
-						loading
-					}
+					disabled={loading}
 				>
 					Submit
 				</Button>

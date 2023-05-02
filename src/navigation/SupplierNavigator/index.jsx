@@ -11,6 +11,8 @@ import Account from "../../screens/Protected/Supplier/Account";
 import Reset from "../../screens/Protected/Supplier/Reset";
 import AddRider from "../../screens/Protected/Supplier/AddRider";
 import EditRider from "../../screens/Protected/Supplier/EditRider";
+import Locate from "../../screens/Protected/Supplier/Locate";
+import FindRiders from "../../screens/Protected/Supplier/FindRiders";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +37,11 @@ const index = () => {
 			<Stack.Screen name="Account" component={Account} />
 			<Stack.Screen name="Reset" component={Reset} />
 			<Stack.Screen name="AddRider" component={AddRider} />
+			<Stack.Screen name="Locate" component={Locate} />
+			<Stack.Screen
+				name="FindRiders"
+				component={FindRiders}
+			/>
 			<Stack.Screen
 				name="EditRider"
 				component={EditRider}

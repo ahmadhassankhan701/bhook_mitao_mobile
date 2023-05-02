@@ -17,6 +17,7 @@ import {
 	collectionGroup,
 	getDocs,
 	limit,
+	onSnapshot,
 	orderBy,
 	query,
 	startAfter,
@@ -28,6 +29,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
+import RequestCard from "../../../components/Card/RequestCard";
 const Requests = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
@@ -44,17 +46,23 @@ const Requests = ({ navigation }) => {
 	};
 	const userId =
 		state && state.user ? state.user.userId : "";
+	const userCity =
+		state && state.user ? state.user.city : "";
 	useEffect(() => {
-		const donations = query(
-			collectionGroup(db, "food"),
-			where("assignedBy.orgId", "==", `${userId}`),
-			where("status", "==", "done"),
-			orderBy("createdAt", "desc"),
-			limit(2)
-		);
-		setLoading(true);
-		getDocs(donations)
-			.then((querySnapshot) => {
+		state && state.user && getRequests();
+	}, [state && state.user]);
+	const getRequests = async () => {
+		try {
+			const donations = query(
+				collectionGroup(db, "food"),
+				where("city", "==", `${state.user.city}`),
+				// where("city", "==", "MOUNTAIN VIEW"),
+				where("status", "==", "requested"),
+				orderBy("createdAt", "desc"),
+				limit(2)
+			);
+			setLoading(true);
+			onSnapshot(donations, (querySnapshot) => {
 				let items = [];
 				if (querySnapshot.size == 0) {
 					setLoading(false);
@@ -67,18 +75,19 @@ const Requests = ({ navigation }) => {
 					});
 				}
 				setDonations(items);
-			})
-			.catch((error) => {
-				setLoading(true);
-				console.log(error);
 			});
-	}, []);
+		} catch (error) {
+			alert("Something went wrong");
+			console.log(error);
+		}
+	};
 	const showNext = ({ item }) => {
 		const fetchNextData = async () => {
 			const donations = query(
 				collectionGroup(db, "food"),
-				where("assignedBy.orgId", "==", `${userId}`),
-				where("status", "==", "done"),
+				where("city", "==", `${state.user.city}`),
+				// where("city", "==", "MOUNTAIN VIEW"),
+				where("status", "==", "requested"),
 				orderBy("createdAt", "desc"),
 				startAfter(item.createdAt),
 				limit(2)
@@ -167,7 +176,7 @@ const Requests = ({ navigation }) => {
 							lineHeight: 27,
 						}}
 					>
-						Donations Done
+						Donation Requests
 					</Text>
 					<ScrollView
 						style={{ height: Sizes.height - 230 }}
@@ -176,11 +185,7 @@ const Requests = ({ navigation }) => {
 						<View>
 							{Object.keys(donations).length != 0 ? (
 								donations.map((val) => (
-									<Done
-										by={"donor"}
-										data={val}
-										key={val.key}
-									/>
+									<RequestCard data={val} key={val.key} />
 								))
 							) : (
 								<View
@@ -191,7 +196,7 @@ const Requests = ({ navigation }) => {
 										alignItems: "center",
 									}}
 								>
-									<Text>No Donations Done Yet </Text>
+									<Text>No Donations Requests </Text>
 									<Text>
 										<IconButton icon={"charity"} />{" "}
 									</Text>

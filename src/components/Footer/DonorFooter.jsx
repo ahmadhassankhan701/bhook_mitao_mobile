@@ -15,7 +15,7 @@ export const Tab = ({
 	routeName,
 }) => {
 	const activeScreenColor =
-		screenName === routeName && "orange";
+		screenName === routeName ? "orange" : "gray";
 	const activeMarginBottom =
 		screenName === routeName ? 0 : 0;
 

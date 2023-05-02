@@ -16,14 +16,17 @@ import {
 } from "react-native-paper";
 import {
 	collectionGroup,
+	doc,
 	getDocs,
 	limit,
 	orderBy,
 	query,
 	startAfter,
+	updateDoc,
 	where,
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import * as Location from "expo-location";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
@@ -42,9 +45,9 @@ const Homepage = ({ navigation }) => {
 		width: Sizes.width - 80,
 		alignSelf: "center",
 	};
-	const userId =
-		state && state.user ? state.user.userId : "";
+	const userId = state && state.user && state.user.userId;
 	useEffect(() => {
+		watchRiderPosition();
 		const donations = query(
 			collectionGroup(db, "food"),
 			where("assignedTo.riderId", "==", `${userId}`),
@@ -73,6 +76,49 @@ const Homepage = ({ navigation }) => {
 				console.log(error);
 			});
 	}, []);
+	const watchRiderPosition = async () => {
+		await getPermissions();
+		await Location.watchPositionAsync(
+			{
+				accuracy: Location.Accuracy.BestForNavigation,
+				timeInterval: 2000,
+				distanceInterval: 5,
+			},
+			(location) => {
+				const { latitude, longitude } = location.coords;
+				saveRiderLocation(latitude, longitude);
+			}
+		);
+	};
+	const getPermissions = async () => {
+		let { status } =
+			await Location.requestForegroundPermissionsAsync();
+		if (status !== "granted") {
+			alert("Location permission is required");
+			return;
+		}
+		let backPerm =
+			await Location.requestBackgroundPermissionsAsync();
+		if (backPerm.status !== "granted") {
+			alert("Location permission is required");
+			return;
+		}
+	};
+	const saveRiderLocation = async (lat, lng) => {
+		try {
+			const docRef = doc(db, `Riders`, `${userId}`);
+			await updateDoc(docRef, {
+				location: {
+					currentLocation: {
+						lat,
+						lng,
+					},
+				},
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const showNext = ({ item }) => {
 		const fetchNextData = async () => {
 			const donations = query(
@@ -107,6 +153,15 @@ const Homepage = ({ navigation }) => {
 	};
 	const handleLogout = async () => {
 		try {
+			const docRef = doc(db, `Riders`, `${userId}`);
+			await updateDoc(docRef, {
+				location: {
+					currentLocation: {
+						lat: 0,
+						lng: 0,
+					},
+				},
+			});
 			await AsyncStorage.removeItem("bhook_auth");
 			setState({ ...state, user: null });
 			navigation.navigate("Intro");

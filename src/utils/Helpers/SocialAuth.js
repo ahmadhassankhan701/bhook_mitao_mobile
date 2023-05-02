@@ -59,6 +59,7 @@ export const signUpGoogleSup = async (
 	if (docSnap.exists()) {
 		userData = {
 			userId: user.uid,
+			city: user.city,
 			provider: "social",
 			registered: true,
 			...docSnap.data(),

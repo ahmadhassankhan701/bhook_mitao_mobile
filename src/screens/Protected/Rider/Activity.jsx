@@ -15,11 +15,16 @@ import {
 } from "react-native-paper";
 import {
 	collectionGroup,
+	deleteField,
+	doc,
 	getDocs,
 	limit,
+	onSnapshot,
 	orderBy,
 	query,
+	serverTimestamp,
 	startAfter,
+	updateDoc,
 	where,
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
@@ -33,6 +38,7 @@ const Activity = ({ navigation }) => {
 	const [donations, setDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [denyloading, setDenyloading] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
@@ -42,8 +48,7 @@ const Activity = ({ navigation }) => {
 		width: Sizes.width - 80,
 		alignSelf: "center",
 	};
-	const userId =
-		state && state.user ? state.user.userId : "";
+	const userId = state && state.user && state.user.userId;
 	useEffect(() => {
 		const donations = query(
 			collectionGroup(db, "food"),
@@ -54,25 +59,20 @@ const Activity = ({ navigation }) => {
 			limit(2)
 		);
 		setLoading(true);
-		getDocs(donations)
-			.then((querySnapshot) => {
-				let items = [];
-				if (querySnapshot.size == 0) {
-					setLoading(false);
-					setNextBtn(false);
-				} else {
-					setLoading(false);
-					setNextBtn(true);
-					querySnapshot.forEach((doc) => {
-						items.push({ key: doc.id, ...doc.data() });
-					});
-				}
-				setDonations(items);
-			})
-			.catch((error) => {
+		onSnapshot(donations, (querySnapshot) => {
+			let items = [];
+			if (querySnapshot.size == 0) {
 				setLoading(false);
-				console.log(error);
-			});
+				setNextBtn(false);
+			} else {
+				setLoading(false);
+				setNextBtn(true);
+				querySnapshot.forEach((doc) => {
+					items.push({ key: doc.id, ...doc.data() });
+				});
+			}
+			setDonations(items);
+		});
 	}, []);
 	const showNext = ({ item }) => {
 		const fetchNextData = async () => {
@@ -109,10 +109,85 @@ const Activity = ({ navigation }) => {
 	};
 	const handleLogout = async () => {
 		try {
+			const docRef = doc(db, `Riders`, `${userId}`);
+			await updateDoc(docRef, {
+				location: {
+					currentLocation: {
+						lat: 0,
+						lng: 0,
+					},
+				},
+			});
 			await AsyncStorage.removeItem("bhook_auth");
 			setState({ ...state, user: null });
 			navigation.navigate("Intro");
 		} catch (error) {
+			console.log(error);
+		}
+	};
+	const handleDeny = async (docId, userId) => {
+		try {
+			const donationsRef = doc(
+				db,
+				`Donations/${userId}/food`,
+				`${docId}`
+			);
+			const request = {
+				assignedBy: deleteField(),
+				assignedTo: deleteField(),
+				status: "requested",
+			};
+			setDenyloading(true);
+			await updateDoc(donationsRef, request);
+			setDenyloading(false);
+			alert("You denied the donation request!");
+		} catch (error) {
+			alert("Something went wrong!");
+			console.log(error);
+		}
+	};
+	const handleStart = async (docId, userId) => {
+		try {
+			const status = "started";
+			const request = {
+				status,
+				createdAt: serverTimestamp(),
+			};
+			const donationsRef = doc(
+				db,
+				`Donations/${userId}/food`,
+				`${docId}`
+			);
+			await updateDoc(donationsRef, request);
+			alert("Good Luck. Donor is waiting!");
+		} catch (error) {
+			alert("Something went wrong!");
+			console.log(error);
+		}
+	};
+	const completeDonation = async (docId, userId) => {
+		try {
+			const done = {
+				donor: false,
+				rider: true,
+				org: false,
+			};
+			const status = "pending";
+			const donationsRef = doc(
+				db,
+				`Donations/${userId}/food`,
+				`${docId}`
+			);
+			const request = {
+				done,
+				status,
+			};
+			await updateDoc(donationsRef, request);
+			alert(
+				"Success. Wait for Donor to confirm Completion"
+			);
+		} catch (error) {
+			alert("Something went wrong!");
 			console.log(error);
 		}
 	};
@@ -181,7 +256,10 @@ const Activity = ({ navigation }) => {
 									<AssignedCard
 										data={val}
 										key={val.key}
-										navigation={navigation}
+										handleDeny={handleDeny}
+										handleStart={handleStart}
+										completeDonation={completeDonation}
+										denyloading={denyloading}
 									/>
 								))
 							) : (

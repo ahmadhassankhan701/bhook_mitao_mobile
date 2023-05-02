@@ -61,10 +61,18 @@ const Account = ({ navigation }) => {
 		};
 		state && state.user && fetchRider();
 	}, [state && state.user]);
-	const userId =
-		state && state.user ? state.user.userId : "";
+	const userId = state && state.user && state.user.userId;
 	const handleLogout = async () => {
 		try {
+			const docRef = doc(db, `Riders`, `${userId}`);
+			await updateDoc(docRef, {
+				location: {
+					currentLocation: {
+						lat: 0,
+						lng: 0,
+					},
+				},
+			});
 			await AsyncStorage.removeItem("bhook_auth");
 			setState({ ...state, user: null });
 			navigation.navigate("Intro");

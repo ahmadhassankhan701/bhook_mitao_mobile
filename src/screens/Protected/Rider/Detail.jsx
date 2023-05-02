@@ -20,14 +20,14 @@ import Basic from "../../../components/Map/Basic";
 const Detail = ({ navigation, route }) => {
 	const { state, setState } = useContext(AuthContext);
 	const [userData, setUserData] = useState({
-		email: "",
 		image: "",
 		name: "",
 	});
 	const [docData, setDocData] = useState({
 		userId: "",
 		status: "",
-		donationType: "",
+		desc: "",
+		quantity: "",
 		phone: "",
 	});
 	const [location, setLocation] = useState({
@@ -69,8 +69,9 @@ const Detail = ({ navigation, route }) => {
 					...docData,
 					userId: reqDonation.userId,
 					status: reqDonation.status,
-					donationType: reqDonation.data.donationtype,
-					phone: reqDonation.data.phone,
+					quantity: reqDonation.detail.quantity,
+					desc: reqDonation.detail.desc,
+					phone: reqDonation.detail.phone,
 				});
 				setLocation({
 					...location,
@@ -79,14 +80,14 @@ const Detail = ({ navigation, route }) => {
 					currentLocation:
 						reqDonation.location.currentLocation,
 				});
-				// setMarker(
-				//     reqDonation.location.currentLocation
-				// );
 			} else {
+				alert("No such Document!");
 				navigation.navigate("Activity");
 			}
 		} catch (error) {
+			alert("Something went wrong!");
 			console.log(error);
+			navigation.navigate("Activity");
 		}
 	};
 	const fetchUserData = async (ref) => {
@@ -103,15 +104,27 @@ const Detail = ({ navigation, route }) => {
 					image: reqUser.image,
 				});
 			} else {
+				alert("No such document!");
 				setLoading(false);
 				navigation.navigate("Activity");
 			}
 		} catch (error) {
+			alert("Something went wrong!");
 			console.log(error);
+			navigation.navigate("Activity");
 		}
 	};
 	const handleLogout = async () => {
 		try {
+			const docRef = doc(db, `Riders`, `${userId}`);
+			await updateDoc(docRef, {
+				location: {
+					currentLocation: {
+						lat: 0,
+						lng: 0,
+					},
+				},
+			});
 			await AsyncStorage.removeItem("bhook_auth");
 			setState({ ...state, user: null });
 			navigation.navigate("Intro");

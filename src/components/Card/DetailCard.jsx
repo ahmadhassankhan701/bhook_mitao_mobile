@@ -14,7 +14,7 @@ const DetailCard = ({ userData, docData, location }) => {
 			<Card style={styles.card}>
 				<Card.Title
 					title={userData.name}
-					subtitle={"+92-" + docData.phone}
+					subtitle={"Phone: 0" + docData.phone}
 					left={() => {
 						return (
 							<Avatar.Image
@@ -31,16 +31,15 @@ const DetailCard = ({ userData, docData, location }) => {
 					right={() => {
 						return (
 							<Text style={{ paddingHorizontal: 10 }}>
-								{docData.donationType}
+								{docData.status}
 							</Text>
 						);
 					}}
 				/>
 				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text variant="titleLarge">{userData.email}</Text>
-					<Text variant="bodyMedium">
-						{location.address}
-					</Text>
+					<Text>For Persons: {docData.quantity}</Text>
+					<Text>Desc: {docData.desc}</Text>
+					<Text>Address: {location.address}</Text>
 				</Card.Content>
 			</Card>
 		</View>

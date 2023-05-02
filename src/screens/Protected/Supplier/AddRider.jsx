@@ -119,6 +119,12 @@ const AddRider = ({ navigation }) => {
 			return;
 		}
 		try {
+			const location = {
+				currentLocation: {
+					lat: 0,
+					lng: 0,
+				},
+			};
 			const rider = {
 				name: detail.name,
 				phone: detail.phone,
@@ -126,6 +132,7 @@ const AddRider = ({ navigation }) => {
 				riderId: detail.id,
 				riderPassword: detail.password,
 				userId,
+				location,
 				createdAt: serverTimestamp(),
 			};
 			setLoading(true);

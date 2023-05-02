@@ -38,6 +38,8 @@ const Activity = ({ navigation }) => {
 	const [donations, setDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [completeLoading, setCompleteLoading] =
+		useState(false);
 	const [visible, setVisible] = useState(false);
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
@@ -135,7 +137,7 @@ const Activity = ({ navigation }) => {
 	};
 	const completeDonation = async (uid, docId) => {
 		try {
-			setLoading(true);
+			setCompleteLoading(true);
 			const done = { donor: true, rider: true, org: false };
 			const donationsRef = doc(
 				db,
@@ -146,10 +148,10 @@ const Activity = ({ navigation }) => {
 				done,
 			};
 			await updateDoc(donationsRef, request);
+			setCompleteLoading(false);
 			alert(
 				"Thanks. Please wait for Organization to confirm Completion"
 			);
-			setLoading(false);
 		} catch (error) {
 			alert("Error completing donation");
 			console.log(error);
@@ -222,6 +224,7 @@ const Activity = ({ navigation }) => {
 										key={val.key}
 										handleDelete={handleDelete}
 										completeDonation={completeDonation}
+										completeLoading={completeLoading}
 									/>
 								))
 							) : (
