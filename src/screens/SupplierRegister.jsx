@@ -252,18 +252,8 @@ const SupplierRegister = ({ navigation }) => {
 			<Avatar.Image
 				size={100}
 				source={require("../assets/org.jpeg")}
-				style={{ marginTop: 20 }}
+				style={{ marginTop: 50 }}
 			/>
-			<Text
-				style={{
-					color: colors.desc,
-					fontSize: Sizes.h2,
-					marginVertical: 10,
-					fontWeight: "600",
-				}}
-			>
-				Register
-			</Text>
 			<KeyboardAvoidingView
 				style={{ flex: 1 }}
 				behavior={

@@ -28,7 +28,7 @@ const InputText = ({
 			mode="outlined"
 			style={{
 				backgroundColor: "#ffffff",
-				width: Sizes.width - 80,
+				width: Sizes.width - 50,
 				marginVertical: 10,
 			}}
 			outlineColor="transparent"

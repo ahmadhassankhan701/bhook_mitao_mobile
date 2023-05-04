@@ -15,6 +15,7 @@ import {
 } from "react-native-paper";
 import {
 	collectionGroup,
+	doc,
 	getDocs,
 	limit,
 	orderBy,
@@ -23,14 +24,17 @@ import {
 	where,
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { activateNotify } from "../../../utils/Helpers/NotifyConfig";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import Header from "../../../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DonorFooter from "../../../components/Footer/DonorFooter";
+import MoneyDone from "../../../components/Card/MoneyDone";
 const Homepage = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
+	const [moneyDonations, setMoneyDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -44,7 +48,54 @@ const Homepage = ({ navigation }) => {
 	};
 	const userId =
 		state && state.user ? state.user.userId : "";
+	const donorDoc = doc(db, `Auth/donor/users/`, userId);
 	useEffect(() => {
+		activateNotification();
+		getDonations();
+		getMoneyDonations();
+	}, []);
+	const getMoneyDonations = async () => {
+		const mdonations = query(
+			collectionGroup(db, "money"),
+			where("userId", "==", `${userId}`),
+			orderBy("createdAt", "desc")
+		);
+		try {
+			const querySnapshot = await getDocs(mdonations);
+			const items = [];
+			querySnapshot.forEach((doc) => {
+				items.push({ key: doc.id, ...doc.data() });
+			});
+			setMoneyDonations(items);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const activateNotification = async () => {
+		try {
+			const push_token = await activateNotify(donorDoc);
+			const userData = {
+				userId,
+				category:
+					state && state.user && state.user.category,
+				email: state && state.user && state.user.email,
+				image: state && state.user && state.user.image,
+				name: state && state.user && state.user.name,
+				provider:
+					state && state.user && state.user.provider,
+				push_token,
+			};
+			const stateData = { userData };
+			await AsyncStorage.setItem(
+				"bhook_auth",
+				JSON.stringify(stateData)
+			);
+			setState({ ...state, user: userData });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const getDonations = async () => {
 		const donations = query(
 			collectionGroup(db, "food"),
 			where("userId", "==", `${userId}`),
@@ -72,38 +123,6 @@ const Homepage = ({ navigation }) => {
 				setLoading(true);
 				console.log(error);
 			});
-	}, []);
-	const showNext = ({ item }) => {
-		const fetchNextData = async () => {
-			const donations = query(
-				collectionGroup(db, "food"),
-				where("userId", "==", `${userId}`),
-				where("status", "==", "done"),
-				orderBy("createdAt", "desc"),
-				startAfter(item.createdAt),
-				limit(2)
-			);
-			try {
-				setLoading(true);
-				const querySnapshot = await getDocs(donations);
-				if (querySnapshot.size == 0) {
-					setLoading(false);
-					setNextBtn(false);
-				} else {
-					setLoading(false);
-					setNextBtn(true);
-					querySnapshot.forEach((doc) => {
-						setDonations((donations) => [
-							...donations,
-							{ key: doc.id, ...doc.data() },
-						]);
-					});
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		};
-		fetchNextData();
 	};
 	const handleLogout = async () => {
 		try {
@@ -167,10 +186,12 @@ const Homepage = ({ navigation }) => {
 							lineHeight: 27,
 						}}
 					>
-						Donations Done
+						Completed Food Donations
 					</Text>
 					<ScrollView
-						style={{ height: Sizes.height - 230 }}
+						style={{
+							height: Sizes.height - 500,
+						}}
 						showsVerticalScrollIndicator={false}
 					>
 						<View>
@@ -185,7 +206,7 @@ const Homepage = ({ navigation }) => {
 							) : (
 								<View
 									style={{
-										paddingTop: 200,
+										paddingTop: 100,
 										display: "flex",
 										flexDirection: "row",
 										alignItems: "center",
@@ -197,38 +218,44 @@ const Homepage = ({ navigation }) => {
 									</Text>
 								</View>
 							)}
-							{loading ? (
-								<ActivityIndicator
-									style={{ paddingTop: 50 }}
-									size={50}
-									animating={loading}
-									color={colors.primary}
-								/>
+						</View>
+					</ScrollView>
+					<Text
+						style={{
+							color: "#000000",
+							marginVertical: 5,
+							fontSize: 18,
+							fontWeight: "600",
+							lineHeight: 27,
+						}}
+					>
+						Completed Money Donations
+					</Text>
+					<ScrollView
+						style={{
+							height: Sizes.height - 500,
+						}}
+						showsVerticalScrollIndicator={false}
+					>
+						<View>
+							{Object.keys(moneyDonations).length != 0 ? (
+								moneyDonations.map((val) => (
+									<MoneyDone data={val} key={val.key} />
+								))
 							) : (
-								nextBtn && (
-									<View
-										style={{
-											display: "flex",
-											flexDirection: "row",
-											alignItems: "center",
-											justifyContent: "center",
-										}}
-									>
-										<IconButton
-											mode="contained"
-											icon={"chevron-down-circle"}
-											containerColor={colors.primary}
-											iconColor="white"
-											onPress={() =>
-												showNext({
-													item: donations[
-														donations.length - 1
-													],
-												})
-											}
-										/>
-									</View>
-								)
+								<View
+									style={{
+										paddingTop: 100,
+										display: "flex",
+										flexDirection: "row",
+										alignItems: "center",
+									}}
+								>
+									<Text>No Donations Done Yet </Text>
+									<Text>
+										<IconButton icon={"charity"} />{" "}
+									</Text>
+								</View>
 							)}
 						</View>
 					</ScrollView>

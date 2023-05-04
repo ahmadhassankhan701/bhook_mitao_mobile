@@ -249,7 +249,7 @@ const SupplierAuth = () => {
 					<View>
 						<Text
 							style={{
-								width: 50,
+								width: 70,
 								textAlign: "center",
 								backgroundColor: `${colors.primary}`,
 								borderRadius: 100,
@@ -262,7 +262,7 @@ const SupplierAuth = () => {
 					</View>
 					<View
 						style={{
-							width: 120,
+							width: 100,
 							height: 1,
 							backgroundColor: "gray",
 						}}
@@ -294,8 +294,8 @@ export default SupplierAuth;
 
 const styles = StyleSheet.create({
 	google_btn: {
-		width: 200,
-		height: 42,
+		width: 250,
+		height: 45,
 		backgroundColor: "#4285f4",
 		borderRadius: 2,
 		display: "flex",

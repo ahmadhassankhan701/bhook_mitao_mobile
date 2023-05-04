@@ -186,7 +186,7 @@ export default NearestRiders;
 
 const styles = StyleSheet.create({
 	map: {
-		width: Sizes.width - 25,
+		width: Sizes.width,
 		borderRadius: 30,
 		marginVertical: 10,
 	},

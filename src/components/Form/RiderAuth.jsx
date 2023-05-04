@@ -91,7 +91,7 @@ const RiderAuth = () => {
 				}}
 			>
 				<Button
-					icon="camera"
+					icon="login"
 					mode="contained"
 					onPress={handleSubmit}
 					style={{

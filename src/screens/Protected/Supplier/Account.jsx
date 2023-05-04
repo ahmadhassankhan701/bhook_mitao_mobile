@@ -227,30 +227,32 @@ const Account = ({ navigation }) => {
 								>
 									Organization
 								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Name:
-									</Text>{" "}
-									{user.name?.toUpperCase()}
-								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Address:
+								<View>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Name:
+										</Text>{" "}
+										{user.name?.toUpperCase()}
 									</Text>
-									{user.place?.toUpperCase()}
-								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										City:
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Address:
+										</Text>
+										{user.place?.toUpperCase()}
 									</Text>
-									{user.city}
-								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Zip Code:
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											City:
+										</Text>
+										{user.city}
 									</Text>
-									{user.zip}
-								</Text>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Zip Code:
+										</Text>
+										{user.zip}
+									</Text>
+								</View>
 								{state.user &&
 									state.user.provider &&
 									state.user.provider == "custom" && (

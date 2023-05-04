@@ -13,7 +13,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { useEffect } from "react";
+import { sendNotification } from "../../../utils/Helpers/NotifyConfig";
+import { AuthContext } from "../../../context/AuthContext";
+import { useContext } from "react";
 const FoodFinal = ({ route, navigation }) => {
+	const { state } = useContext(AuthContext);
+	const token =
+		state && state.user && state.user.push_token;
 	const { detail, identity, loc, userId, docId } =
 		route.params;
 	const [loading, setLoading] = useState(false);
@@ -72,6 +78,12 @@ const FoodFinal = ({ route, navigation }) => {
 			alert(
 				"Donation made successfully. Keep checking for status!"
 			);
+			alert(token);
+			await sendNotification(
+				token,
+				"Food Donation",
+				"You have made food donation request. Please wait for the organization to approve"
+			);
 			navigation.navigate("Activity");
 		} catch (error) {
 			alert("Something went wrong");
@@ -110,6 +122,12 @@ const FoodFinal = ({ route, navigation }) => {
 			alert(
 				"Donation updated successfully. Keep checking for status!"
 			);
+			// alert(token);
+			await sendNotification(
+				token,
+				"Food Donation",
+				"You have updated food donation request. Please wait for the organization to approve"
+			);
 			navigation.navigate("Activity");
 		} catch (error) {
 			alert("Something went wrong");
@@ -125,7 +143,7 @@ const FoodFinal = ({ route, navigation }) => {
 					handleChange={handleChange}
 				/>
 			</View>
-			<View style={{ marginTop: 10 }}>
+			<View style={{ marginTop: 20 }}>
 				<Button
 					icon={"charity"}
 					mode="contained"

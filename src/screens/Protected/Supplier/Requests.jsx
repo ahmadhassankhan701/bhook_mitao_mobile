@@ -179,7 +179,9 @@ const Requests = ({ navigation }) => {
 						Donation Requests
 					</Text>
 					<ScrollView
-						style={{ height: Sizes.height - 230 }}
+						style={{
+							height: Sizes.height - 300,
+						}}
 						showsVerticalScrollIndicator={false}
 					>
 						<View>

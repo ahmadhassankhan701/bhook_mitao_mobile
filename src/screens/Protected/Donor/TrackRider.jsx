@@ -4,6 +4,7 @@ import React, {
 	useEffect,
 	useRef,
 } from "react";
+import { styling } from "../../../utils/Helpers/MapStyles";
 import { useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../../firebase";
@@ -89,6 +90,7 @@ const TrackRider = ({ route }) => {
 						longitudeDelta: 0.01,
 					}}
 					style={[styles.map, { height: 700 }]}
+					customMapStyle={styling}
 				>
 					<MarkerAnimated
 						ref={mapView}
@@ -116,7 +118,7 @@ export default TrackRider;
 
 const styles = StyleSheet.create({
 	map: {
-		width: Sizes.width - 25,
+		width: Sizes.width,
 		borderRadius: 30,
 		marginVertical: 10,
 	},
@@ -124,5 +126,6 @@ const styles = StyleSheet.create({
 		borderColor: "lightgray",
 		borderWidth: 1,
 		borderRadius: 20,
+		marginVertical: 10,
 	},
 });

@@ -168,7 +168,7 @@ const DonorAuth = () => {
 					}}
 				>
 					<Button
-						icon="camera"
+						icon="login"
 						mode="contained"
 						onPress={handleSubmit}
 						style={{
@@ -225,7 +225,7 @@ const DonorAuth = () => {
 					<View>
 						<Text
 							style={{
-								width: 50,
+								width: 70,
 								textAlign: "center",
 								backgroundColor: `${colors.primary}`,
 								borderRadius: 100,
@@ -238,7 +238,7 @@ const DonorAuth = () => {
 					</View>
 					<View
 						style={{
-							width: 120,
+							width: 100,
 							height: 1,
 							backgroundColor: "gray",
 						}}
@@ -257,7 +257,7 @@ const DonorAuth = () => {
 							/>
 						</View>
 						<Text style={styles.btn_text}>
-							Sign up with google
+							Sign in with google
 						</Text>
 					</TouchableOpacity>
 				</View>
@@ -270,8 +270,8 @@ export default DonorAuth;
 
 const styles = StyleSheet.create({
 	google_btn: {
-		width: 200,
-		height: 42,
+		width: 230,
+		height: 45,
 		backgroundColor: "#4285f4",
 		borderRadius: 2,
 		display: "flex",

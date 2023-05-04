@@ -4,6 +4,15 @@ import { useFonts } from "expo-font";
 import { Provider as PaperProvider } from "react-native-paper";
 import { AuthProvider } from "./src/context/AuthContext";
 import Navigation from "./src/navigation";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
 export default function App() {
 	const [fontsLoaded] = useFonts({
 		"Montserrat-Regular": require("./src/assets/fonts/Montserrat-Regular.ttf"),

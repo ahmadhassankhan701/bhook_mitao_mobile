@@ -17,7 +17,7 @@ const FoodEditForm = ({ data, userId, docId }) => {
 	const [detail, setDetail] = useState({
 		name: "",
 		phone: "",
-		quantity: 0,
+		quantity: "",
 		desc: "",
 	});
 	const [identity, setIdentity] = useState("hotel");
@@ -89,7 +89,7 @@ const FoodEditForm = ({ data, userId, docId }) => {
 		const proceed =
 			detail.name != "" &&
 			detail.phone != "" &&
-			detail.quantity != 0 &&
+			detail.quantity != "" &&
 			detail.desc != "" &&
 			identity != "";
 		if (!proceed) {

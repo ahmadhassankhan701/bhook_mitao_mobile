@@ -100,7 +100,7 @@ const Intro = ({ navigation }) => {
 					flex: 1,
 					alignItems: "center",
 					padding: 10,
-					paddingTop: 100,
+					paddingTop: 20,
 				}}
 			>
 				<Image

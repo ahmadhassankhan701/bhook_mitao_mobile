@@ -190,7 +190,10 @@ const Detail = ({ navigation, route }) => {
 								docData={docData}
 								location={location}
 							/>
-							<Basic location={location} />
+							<Basic
+								location={location}
+								markerImg={"pin"}
+							/>
 						</View>
 					</View>
 				)}

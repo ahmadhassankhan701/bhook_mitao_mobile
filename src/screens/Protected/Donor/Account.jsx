@@ -186,7 +186,7 @@ const Account = ({ navigation }) => {
 											? { uri: donor.image }
 											: require("../../../assets/donorLogo.jpg")
 									}
-									style={{ marginVertical: 30 }}
+									style={{ marginVertical: 20 }}
 								/>
 								<IconButton
 									icon={"camera"}
@@ -199,25 +199,27 @@ const Account = ({ navigation }) => {
 									style={{
 										color: colors.desc,
 										fontSize: Sizes.h2,
-										marginVertical: 10,
+										marginVertical: 5,
 										fontWeight: "600",
 										letterSpacing: 5,
 									}}
 								>
 									Donor
 								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Name:
-									</Text>{" "}
-									{donor.name}
-								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Email:
+								<View>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Name:
+										</Text>{" "}
+										{donor.name}
 									</Text>
-									{donor.email}
-								</Text>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Email:
+										</Text>
+										{donor.email}
+									</Text>
+								</View>
 								{state.user &&
 									state.user.provider &&
 									state.user.provider == "custom" && (
@@ -269,6 +271,7 @@ const styles = StyleSheet.create({
 		color: "dimgray",
 		fontWeight: "600",
 		letterSpacing: 2,
+		textAlign: "left",
 	},
 	cardSubText: {
 		fontWeight: "700",

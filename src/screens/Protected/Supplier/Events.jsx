@@ -216,7 +216,7 @@ const Events = ({ navigation }) => {
 
 					<ScrollView
 						style={{
-							height: Sizes.height - 300,
+							height: Sizes.height - 280,
 						}}
 						showsVerticalScrollIndicator={false}
 					>

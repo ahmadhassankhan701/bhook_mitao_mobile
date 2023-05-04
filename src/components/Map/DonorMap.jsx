@@ -91,7 +91,11 @@ const DonorMap = ({ location, handleChange }) => {
 				<Button
 					icon={"pin"}
 					buttonColor={colors.primary}
-					style={{ width: "50%", alignSelf: "center" }}
+					style={{
+						width: "50%",
+						alignSelf: "center",
+						marginTop: 30,
+					}}
 					mode="contained"
 					onPress={getPermissions}
 				>

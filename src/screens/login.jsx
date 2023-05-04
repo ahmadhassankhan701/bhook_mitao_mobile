@@ -21,7 +21,7 @@ const Login = ({ navigation, route }) => {
 					<Avatar.Image
 						size={150}
 						source={require("../assets/donorLogo.jpg")}
-						style={{ marginVertical: 30 }}
+						style={{ marginTop: 30 }}
 					/>
 					<Text
 						style={{
@@ -40,7 +40,7 @@ const Login = ({ navigation, route }) => {
 					<Avatar.Image
 						size={120}
 						source={require("../assets/org.jpeg")}
-						style={{ marginVertical: 30 }}
+						style={{ marginTop: 30 }}
 					/>
 					<Text
 						style={{

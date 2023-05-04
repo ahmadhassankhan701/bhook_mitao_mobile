@@ -68,7 +68,7 @@ export default InputSelect;
 
 const styles = StyleSheet.create({
 	selectCover: {
-		width: Sizes.width - 80,
+		width: Sizes.width - 50,
 	},
 	identity: {
 		backgroundColor: "white",

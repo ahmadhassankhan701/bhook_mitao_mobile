@@ -1,19 +1,11 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { deleteField, updateDoc } from "firebase/firestore";
 import { Platform } from "react-native";
-import {
-	addDoc,
-	collection,
-	deleteDoc,
-	doc,
-	getDocs,
-	query,
-	where,
-} from "firebase/firestore";
-import { db } from "../../../firebase";
+import axios from "axios";
 
-export const NotifyConfig = () => {
-	const registerForPushNotificationsAsync = async () => {
+export const registerForPushNotificationsAsync =
+	async () => {
 		let token;
 
 		if (Platform.OS === "android") {
@@ -52,63 +44,31 @@ export const NotifyConfig = () => {
 
 		return token;
 	};
-
-	const activeNotification = async (user) => {
-		const token = await registerForPushNotificationsAsync();
-
-		if (!token) {
-			return;
-		}
-
-		// console.log("token", token);
-
-		const docRef = await addDoc(
-			collection(db, "notification"),
-			{
-				token: token,
-				status: true,
-				user: user.userId,
-			}
-		);
-		// console.log("Document written with ID: ", docRef.id);
-	};
-
-	const deactiveNotification = async (user) => {
-		const token = await registerForPushNotificationsAsync();
-
-		if (!token) {
-			return;
-		}
-
-		const q = query(
-			collection(db, "notification"),
-			where("token", "==", token),
-			where("user", "==", user.userId)
-		);
-		const querySnapshot = await getDocs(q);
-		querySnapshot.forEach((docu) => {
-			deleteDoc(doc(db, "notification", docu.id));
+export const sendNotification = async (
+	push_token,
+	title,
+	body
+) => {
+	await axios
+		.post("https://exp.host/--/api/v2/push/send", {
+			to: push_token,
+			title: title,
+			body: body,
+		})
+		.then(function (response) {})
+		.catch(function (error) {
+			console.log(error);
 		});
-	};
-
-	const sendNotification = async (user, title, body) => {
-		// console.log(user, title, body);
-		// await axios
-		// 	.post("https://exp.host/--/api/v2/push/send", {
-		// 		to: user,
-		// 		title: title,
-		// 		body: body,
-		// 	})
-		// 	.then(function (response) {})
-		// 	.catch(function (error) {
-		// 		console.log(error);
-		// 	});
-	};
-
-	return {
-		registerForPushNotificationsAsync,
-		activeNotification,
-		deactiveNotification,
-		sendNotification,
-	};
+};
+export const activateNotify = async (userRef) => {
+	const token = await registerForPushNotificationsAsync();
+	if (!token) {
+		return;
+	}
+	try {
+		await updateDoc(userRef, { push_token: token });
+		return token;
+	} catch (error) {
+		console.log(error);
+	}
 };

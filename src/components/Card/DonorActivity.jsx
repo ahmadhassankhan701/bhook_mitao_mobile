@@ -99,6 +99,8 @@ const DonorActivity = ({
 								})
 							}
 						/>
+					) : data.status == "assigned" ? (
+						<Text>Waiting for rider</Text>
 					) : (
 						<IconButton
 							icon={"racing-helmet"}

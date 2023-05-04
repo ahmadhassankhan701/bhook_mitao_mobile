@@ -3,6 +3,7 @@ import {
 	Text,
 	View,
 	ScrollView,
+	Platform,
 } from "react-native";
 import React from "react";
 import InputSelect from "../Input/InputSelect";
@@ -14,12 +15,13 @@ import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { SafeAreaView } from "react-native";
 const FoodForm = () => {
 	const { state } = useContext(AuthContext);
 	const [detail, setDetail] = useState({
 		name: "",
 		phone: "",
-		quantity: 0,
+		quantity: "",
 		desc: "",
 	});
 	const [identity, setIdentity] = useState("hotel");
@@ -81,7 +83,7 @@ const FoodForm = () => {
 		const proceed =
 			detail.name != "" &&
 			detail.phone != "" &&
-			detail.quantity != 0 &&
+			detail.quantity != "" &&
 			detail.desc != "" &&
 			identity != "";
 		if (!proceed) {
@@ -166,17 +168,20 @@ const FoodForm = () => {
 							icon={"note"}
 							handleChange={handleChange}
 						/>
+						<Button
+							icon={"chevron-right"}
+							contentStyle={{
+								flexDirection: "row-reverse",
+							}}
+							style={{ width: "50%", alignSelf: "center" }}
+							mode="contained"
+							buttonColor={colors.primary}
+							onPress={() => handleNext()}
+						>
+							Next
+						</Button>
 					</ScrollView>
 				</KeyboardAvoidingView>
-				<Button
-					icon={"chevron-right"}
-					contentStyle={{ flexDirection: "row-reverse" }}
-					mode="contained"
-					buttonColor={colors.primary}
-					onPress={() => handleNext()}
-				>
-					Next
-				</Button>
 			</View>
 		</View>
 	);

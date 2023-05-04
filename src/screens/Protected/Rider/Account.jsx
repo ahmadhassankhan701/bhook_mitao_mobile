@@ -230,18 +230,20 @@ const Account = ({ navigation }) => {
 								>
 									Rider
 								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Name:
-									</Text>{" "}
-									{rider.name}
-								</Text>
-								<Text style={styles.cardText}>
-									<Text style={styles.cardSubText}>
-										Phone:
+								<View>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Name:
+										</Text>{" "}
+										{rider.name}
 									</Text>
-									0{rider.phone}
-								</Text>
+									<Text style={styles.cardText}>
+										<Text style={styles.cardSubText}>
+											Phone:
+										</Text>
+										0{rider.phone}
+									</Text>
+								</View>
 							</Card.Content>
 						</Card>
 					)}

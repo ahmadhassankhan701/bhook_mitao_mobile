@@ -81,7 +81,7 @@ const Homepage = ({ navigation }) => {
 		await Location.watchPositionAsync(
 			{
 				accuracy: Location.Accuracy.BestForNavigation,
-				timeInterval: 2000,
+				timeInterval: 5000,
 				distanceInterval: 5,
 			},
 			(location) => {
@@ -225,7 +225,9 @@ const Homepage = ({ navigation }) => {
 						Donations Done
 					</Text>
 					<ScrollView
-						style={{ height: Sizes.height - 230 }}
+						style={{
+							height: Sizes.height - 300,
+						}}
 						showsVerticalScrollIndicator={false}
 					>
 						<View>
