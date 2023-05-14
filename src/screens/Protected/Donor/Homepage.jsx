@@ -175,12 +175,20 @@ const Homepage = ({ navigation }) => {
 					</View>
 				</Modal>
 			</Portal>
-			<View>
+			<View
+				style={{
+					height: Sizes.height - 400,
+				}}
+			>
+				{/* <ScrollView
+					showsVerticalScrollIndicator={false}
+					
+				> */}
 				<View style={styles.center}>
 					<Text
 						style={{
 							color: "#000000",
-							marginVertical: 5,
+							marginVertical: 2,
 							fontSize: 18,
 							fontWeight: "600",
 							lineHeight: 27,
@@ -188,12 +196,7 @@ const Homepage = ({ navigation }) => {
 					>
 						Completed Food Donations
 					</Text>
-					<ScrollView
-						style={{
-							height: Sizes.height - 500,
-						}}
-						showsVerticalScrollIndicator={false}
-					>
+					<ScrollView showsVerticalScrollIndicator={false}>
 						<View>
 							{Object.keys(donations).length != 0 ? (
 								donations.map((val) => (
@@ -206,7 +209,7 @@ const Homepage = ({ navigation }) => {
 							) : (
 								<View
 									style={{
-										paddingTop: 100,
+										paddingVertical: 10,
 										display: "flex",
 										flexDirection: "row",
 										alignItems: "center",
@@ -223,7 +226,7 @@ const Homepage = ({ navigation }) => {
 					<Text
 						style={{
 							color: "#000000",
-							marginVertical: 5,
+							marginVertical: 2,
 							fontSize: 18,
 							fontWeight: "600",
 							lineHeight: 27,
@@ -231,12 +234,7 @@ const Homepage = ({ navigation }) => {
 					>
 						Completed Money Donations
 					</Text>
-					<ScrollView
-						style={{
-							height: Sizes.height - 500,
-						}}
-						showsVerticalScrollIndicator={false}
-					>
+					<ScrollView showsVerticalScrollIndicator={false}>
 						<View>
 							{Object.keys(moneyDonations).length != 0 ? (
 								moneyDonations.map((val) => (
@@ -260,6 +258,7 @@ const Homepage = ({ navigation }) => {
 						</View>
 					</ScrollView>
 				</View>
+				{/* </ScrollView> */}
 			</View>
 			<DonorFooter />
 		</View>

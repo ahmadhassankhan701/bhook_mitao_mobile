@@ -29,9 +29,6 @@ const DonorMap = ({ location, handleChange }) => {
 		latitudeDelta: 0.01,
 		longitudeDelta: 0.01,
 	});
-	Location.setGoogleApiKey(
-		"AIzaSyCAukR_SsOKADb2N1YmOEyRwFGKWZTwmOo"
-	);
 	const getPermissions = async () => {
 		let { status } =
 			await Location.requestForegroundPermissionsAsync();

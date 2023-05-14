@@ -1,9 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useRef, useState } from "react";
-import MapView, {
-	Callout,
-	Marker,
-} from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { Sizes } from "../../utils/theme";
 import { Image } from "react-native";
 import { getDistance } from "geolib";

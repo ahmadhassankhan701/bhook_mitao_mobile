@@ -5,7 +5,11 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { AuthProvider } from "./src/context/AuthContext";
 import Navigation from "./src/navigation";
 import * as Notifications from "expo-notifications";
+import * as Location from "expo-location";
 
+Location.setGoogleApiKey(
+	"AIzaSyCAukR_SsOKADb2N1YmOEyRwFGKWZTwmOo"
+);
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
 		shouldShowAlert: true,
