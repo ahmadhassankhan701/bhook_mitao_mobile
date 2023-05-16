@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Sizes, colors } from "../../../utils/theme";
-import Done from "../../../components/Card/Done";
 import {
 	ActivityIndicator,
 	IconButton,
@@ -14,12 +13,14 @@ import {
 	Portal,
 } from "react-native-paper";
 import {
+	and,
 	collectionGroup,
 	deleteDoc,
 	doc,
 	getDocs,
 	limit,
 	onSnapshot,
+	or,
 	orderBy,
 	query,
 	startAfter,
@@ -57,9 +58,15 @@ const Activity = ({ navigation }) => {
 	const getDonations = async () => {
 		const donations = query(
 			collectionGroup(db, "food"),
-			where("userId", "==", `${userId}`),
-			where("status", "!=", "done"),
-			orderBy("status", "desc"),
+			and(
+				where("userId", "==", `${userId}`),
+				or(
+					where("status", "==", "requested"),
+					where("status", "==", "pending"),
+					where("status", "==", "assigned"),
+					where("status", "==", "started")
+				)
+			),
 			orderBy("createdAt", "desc"),
 			limit(2)
 		);
@@ -83,9 +90,15 @@ const Activity = ({ navigation }) => {
 		const fetchNextData = async () => {
 			const donations = query(
 				collectionGroup(db, "food"),
-				where("userId", "==", `${userId}`),
-				where("status", "!=", "done"),
-				orderBy("status", "desc"),
+				and(
+					where("userId", "==", `${userId}`),
+					or(
+						where("status", "==", "requested"),
+						where("status", "==", "pending"),
+						where("status", "==", "assigned"),
+						where("status", "==", "started")
+					)
+				),
 				orderBy("createdAt", "desc"),
 				startAfter(item.createdAt),
 				limit(2)

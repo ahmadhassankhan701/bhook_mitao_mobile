@@ -50,7 +50,6 @@ const Homepage = ({ navigation }) => {
 		state && state.user ? state.user.userId : "";
 	const donorDoc = doc(db, `Auth/donor/users/`, userId);
 	useEffect(() => {
-		activateNotification();
 		getDonations();
 		getMoneyDonations();
 	}, []);
@@ -67,30 +66,6 @@ const Homepage = ({ navigation }) => {
 				items.push({ key: doc.id, ...doc.data() });
 			});
 			setMoneyDonations(items);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const activateNotification = async () => {
-		try {
-			const push_token = await activateNotify(donorDoc);
-			const userData = {
-				userId,
-				category:
-					state && state.user && state.user.category,
-				email: state && state.user && state.user.email,
-				image: state && state.user && state.user.image,
-				name: state && state.user && state.user.name,
-				provider:
-					state && state.user && state.user.provider,
-				push_token,
-			};
-			const stateData = { userData };
-			await AsyncStorage.setItem(
-				"bhook_auth",
-				JSON.stringify(stateData)
-			);
-			setState({ ...state, user: userData });
 		} catch (error) {
 			console.log(error);
 		}

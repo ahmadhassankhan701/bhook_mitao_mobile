@@ -78,13 +78,12 @@ const FoodFinal = ({ route, navigation }) => {
 			alert(
 				"Donation made successfully. Keep checking for status!"
 			);
-			alert(token);
 			await sendNotification(
 				token,
 				"Food Donation",
 				"You have made food donation request. Please wait for the organization to approve"
 			);
-			navigation.navigate("Activity");
+			navigation.navigate("Homepage");
 		} catch (error) {
 			alert("Something went wrong");
 			console.log(error);
@@ -122,13 +121,12 @@ const FoodFinal = ({ route, navigation }) => {
 			alert(
 				"Donation updated successfully. Keep checking for status!"
 			);
-			// alert(token);
 			await sendNotification(
 				token,
 				"Food Donation",
 				"You have updated food donation request. Please wait for the organization to approve"
 			);
-			navigation.navigate("Activity");
+			navigation.navigate("Homepage");
 		} catch (error) {
 			alert("Something went wrong");
 			console.log(error);

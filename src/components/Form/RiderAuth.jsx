@@ -9,6 +9,7 @@ import { db } from "../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { activateNotify } from "../../utils/Helpers/NotifyConfig";
 import { useNavigation } from "@react-navigation/native";
 
 const RiderAuth = () => {
@@ -36,11 +37,13 @@ const RiderAuth = () => {
 					setLoading(false);
 					const data = docSnap.data();
 					if (data.riderPassword == detail.password) {
+						const push_token = activateNotify(docRef);
 						const user = {
 							userId: detail.id,
 							category: "rider",
 							image: data.image,
 							name: data.name,
+							push_token,
 						};
 						const stateData = { user };
 						setState({

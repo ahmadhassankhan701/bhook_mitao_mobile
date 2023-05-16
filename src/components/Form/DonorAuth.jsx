@@ -26,6 +26,7 @@ import {
 	sendEmailVerification,
 	signInWithEmailAndPassword,
 } from "firebase/auth";
+import { activateNotify } from "../../utils/Helpers/NotifyConfig";
 WebBrowser.maybeCompleteAuthSession();
 
 const DonorAuth = () => {
@@ -111,12 +112,14 @@ const DonorAuth = () => {
 				if (docSnap.exists()) {
 					// console.log("Document data:", docSnap.data());
 					const res = docSnap.data();
+					const push_token = activateNotify(docRef);
 					const user = {
 						userId: users.uid,
 						category: res.category,
 						email: res.email,
 						image: res.image,
 						name: res.name,
+						push_token,
 						provider: "custom",
 					};
 					const stateData = { user };
