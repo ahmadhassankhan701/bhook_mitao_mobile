@@ -36,7 +36,7 @@ const Intro = ({ navigation }) => {
 			<View style={{ padding: 12 }}>
 				<Text
 					style={{
-						color: colors.title,
+						color: colors.primary,
 						fontWeight: "600",
 						fontSize: Sizes.h4,
 					}}
@@ -58,6 +58,7 @@ const Intro = ({ navigation }) => {
 								alignItems: "center",
 								padding: 10,
 								paddingTop: 100,
+								backgroundColor: "#000",
 							}}
 						>
 							<Image
@@ -73,6 +74,7 @@ const Intro = ({ navigation }) => {
 									textAlign: "center",
 									color: colors.desc,
 									paddingTop: 5,
+									fontSize: 15,
 								}}
 							>
 								{item.desc}
@@ -84,6 +86,9 @@ const Intro = ({ navigation }) => {
 					backgroundColor: colors.primary,
 					width: 30,
 				}}
+				dotStyle={{
+					backgroundColor: colors.primary,
+				}}
 				showSkipButton
 				renderNextButton={() => buttonLabel("Next")}
 				renderSkipButton={() => buttonLabel("Skip")}
@@ -94,7 +99,9 @@ const Intro = ({ navigation }) => {
 		);
 	}
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView
+			style={{ flex: 1, backgroundColor: "#000" }}
+		>
 			<View
 				style={{
 					flex: 1,
@@ -130,6 +137,7 @@ const Intro = ({ navigation }) => {
 						style={{
 							marginVertical: 10,
 							width: 200,
+							borderRadius: 10,
 						}}
 					>
 						Donor
@@ -145,6 +153,7 @@ const Intro = ({ navigation }) => {
 						style={{
 							marginVertical: 10,
 							width: 200,
+							borderRadius: 10,
 						}}
 					>
 						Supplier
@@ -160,6 +169,7 @@ const Intro = ({ navigation }) => {
 						style={{
 							marginVertical: 10,
 							width: 200,
+							borderRadius: 10,
 						}}
 					>
 						Rider

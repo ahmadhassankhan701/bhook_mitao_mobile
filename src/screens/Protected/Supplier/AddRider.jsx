@@ -190,13 +190,7 @@ const AddRider = ({ navigation }) => {
 		return null;
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
+		<View style={styles.container}>
 			<RiderForm
 				detail={detail}
 				error={error}
@@ -215,42 +209,10 @@ const AddRider = ({ navigation }) => {
 export default AddRider;
 
 const styles = StyleSheet.create({
-	google_btn: {
-		width: 200,
-		height: 42,
-		backgroundColor: "#4285f4",
-		borderRadius: 2,
-		display: "flex",
-		flexDirection: "row",
-		boxShadow: "0 3px 4px 0 rgba(0, 0, 0, 0.25)",
-		alignItems: "center",
-		alignSelf: "center",
-		marginVertical: "5%",
-	},
-	google_icon_wrapper: {
+	container: {
 		flex: 1,
-		marginTop: 1,
-		marginLeft: 1,
-		width: 40,
-		height: 40,
-		borderRadius: 2,
-		backgroundColor: "#fff",
-	},
-	google_icon: {
-		marginTop: 11,
-		marginLeft: 11,
-		width: 20,
-		height: 20,
-	},
-	btn_text: {
-		flex: 4,
-		alignSelf: "center",
-		margin: 11,
-		marginRight: 11,
-		fontSize: 14,
-		fontWeight: "bold",
-		fontFamily: "Roboto",
-		letterSpacing: 0.2,
-		color: "#fff",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#000",
 	},
 });

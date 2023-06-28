@@ -15,7 +15,6 @@ import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { SafeAreaView } from "react-native";
 const FoodForm = () => {
 	const { state } = useContext(AuthContext);
 	const [detail, setDetail] = useState({
@@ -24,7 +23,8 @@ const FoodForm = () => {
 		quantity: "",
 		desc: "",
 	});
-	const [identity, setIdentity] = useState("hotel");
+	const [identity, setIdentity] = useState("");
+	const [visible, setVisible] = useState(false);
 	const [error, setError] = useState({
 		nameErr: "",
 		phoneErr: "",
@@ -99,89 +99,97 @@ const FoodForm = () => {
 		navigation.navigate("FoodFinal", {
 			detail,
 			identity,
-			userId,
 		});
 	};
 	return (
 		<View style={styles.container}>
 			<View style={styles.appcover}>
-				<KeyboardAvoidingView
-					style={{
-						width: Sizes.width - 10,
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						marginVertical: 10,
-					}}
-					behavior={
-						Platform.OS === "ios" ? "padding" : "height"
-					}
-				>
-					<ScrollView showsVerticalScrollIndicator={false}>
-						<InputSelect
-							identity={identity}
-							setIdentity={setIdentity}
-						/>
-						<InputText
-							title={"Name *"}
-							name={"name"}
-							icon={"badge-account"}
-							handleChange={handleChange}
-						/>
-						{error.nameErr != "" && (
-							<Text
-								style={{
-									color: "red",
-									textAlign: "center",
-									maxWidth: 250,
-								}}
-							>
-								{error.nameErr}
-							</Text>
-						)}
-						<InputText
-							title={"Phone *"}
-							name={"phone"}
-							icon={"phone"}
-							handleChange={handleChange}
-						/>
-						{error.phoneErr != "" && (
-							<Text
-								style={{
-									color: "red",
-									textAlign: "center",
-									maxWidth: 250,
-								}}
-							>
-								{error.phoneErr}
-							</Text>
-						)}
-						<InputText
-							title={"For Persons *"}
-							name={"quantity"}
-							icon={"account-multiple"}
-							handleChange={handleChange}
-						/>
-						<InputText
-							title={"Description *"}
-							name={"desc"}
-							icon={"note"}
-							handleChange={handleChange}
-						/>
-						<Button
-							icon={"chevron-right"}
-							contentStyle={{
-								flexDirection: "row-reverse",
-							}}
-							style={{ width: "50%", alignSelf: "center" }}
-							mode="contained"
-							buttonColor={colors.primary}
-							onPress={() => handleNext()}
+				<View>
+					<KeyboardAvoidingView
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							marginTop: 50,
+						}}
+						behavior={
+							Platform.OS === "ios" ? "padding" : "height"
+						}
+					>
+						<ScrollView
+							showsVerticalScrollIndicator={false}
 						>
-							Next
-						</Button>
-					</ScrollView>
-				</KeyboardAvoidingView>
+							<InputSelect
+								identity={identity}
+								setIdentity={setIdentity}
+								visible={visible}
+								setVisible={setVisible}
+							/>
+							<InputText
+								title={"Name *"}
+								name={"name"}
+								icon={"badge-account"}
+								handleChange={handleChange}
+							/>
+							{error.nameErr != "" && (
+								<Text
+									style={{
+										color: "red",
+										textAlign: "center",
+										maxWidth: 250,
+									}}
+								>
+									{error.nameErr}
+								</Text>
+							)}
+							<InputText
+								title={"Phone *"}
+								name={"phone"}
+								icon={"phone"}
+								handleChange={handleChange}
+							/>
+							{error.phoneErr != "" && (
+								<Text
+									style={{
+										color: "red",
+										textAlign: "center",
+										maxWidth: 250,
+									}}
+								>
+									{error.phoneErr}
+								</Text>
+							)}
+							<InputText
+								title={"For Persons *"}
+								name={"quantity"}
+								icon={"account-multiple"}
+								handleChange={handleChange}
+							/>
+							<InputText
+								title={"Description *"}
+								name={"desc"}
+								icon={"note"}
+								handleChange={handleChange}
+							/>
+							<Button
+								icon={"arrow-right"}
+								contentStyle={{
+									flexDirection: "row-reverse",
+								}}
+								style={{
+									width: "50%",
+									alignSelf: "center",
+									borderRadius: 10,
+								}}
+								mode="contained"
+								buttonColor={colors.primary}
+								onPress={() => handleNext()}
+							>
+								Next
+							</Button>
+						</ScrollView>
+					</KeyboardAvoidingView>
+				</View>
 			</View>
 		</View>
 	);
@@ -194,13 +202,9 @@ const styles = StyleSheet.create({
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		height: Sizes.height - 100,
 	},
 	appcover: {
 		width: Sizes.width - 10,
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
 	},
 	form: {
 		marginVertical: 10,

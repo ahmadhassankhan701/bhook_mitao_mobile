@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import Footer from "../../../components/Footer";
 import { Sizes, colors } from "../../../utils/theme";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import {
 	ActivityIndicator,
 	Avatar,
+	Button,
 	Card,
 	IconButton,
 	Modal,
@@ -15,7 +15,6 @@ import {
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Header from "../../../components/Header";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../firebase";
 import {
@@ -23,6 +22,7 @@ import {
 	ref,
 	uploadBytes,
 } from "firebase/storage";
+import RiderFooter from "../../../components/Footer";
 const Account = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
 	const [rider, setRider] = useState({});
@@ -32,7 +32,7 @@ const Account = ({ navigation }) => {
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
 	const containerStyle = {
-		backgroundColor: "white",
+		backgroundColor: colors.primary,
 		padding: 20,
 		width: Sizes.width - 80,
 		alignSelf: "center",
@@ -98,9 +98,7 @@ const Account = ({ navigation }) => {
 		if (pickerResult.canceled === true) {
 			return;
 		}
-		const path = `Profiles/${
-			state.user.category
-		}/${userId}/${Date.now()}`;
+		const path = `Profiles/rider/${userId}/${Date.now()}`;
 		const img = await uploadImage(
 			path,
 			pickerResult.assets[0].uri
@@ -135,26 +133,10 @@ const Account = ({ navigation }) => {
 		await updateDoc(riderDoc, {
 			image: img,
 		});
-		const userData = {
-			userId: state.user.userId,
-			category: "rider",
-			image: img,
-			name: rider.name,
-		};
-		const stateData = { userData };
-		await AsyncStorage.setItem(
-			"bhook_auth",
-			JSON.stringify(stateData)
-		);
+		alert("Image Uploaded Successfully!");
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
+		<View style={styles.container}>
 			<Portal>
 				<Modal
 					visible={visible}
@@ -162,7 +144,12 @@ const Account = ({ navigation }) => {
 					contentContainerStyle={containerStyle}
 				>
 					<View>
-						<Text style={{ textAlign: "center" }}>
+						<Text
+							style={{
+								textAlign: "center",
+								color: "white",
+							}}
+						>
 							Are you sure you want to logout?
 						</Text>
 						<View
@@ -189,8 +176,8 @@ const Account = ({ navigation }) => {
 					</View>
 				</Modal>
 			</Portal>
-			<View>
-				<View style={styles.center}>
+			<View style={styles.main}>
+				<View style={styles.wrapper}>
 					{loading ? (
 						<ActivityIndicator
 							style={{ paddingTop: 50 }}
@@ -215,13 +202,13 @@ const Account = ({ navigation }) => {
 								<IconButton
 									icon={"camera"}
 									mode="contained"
-									containerColor={colors.primary}
+									containerColor={"#000"}
 									iconColor="white"
 									onPress={handleImage}
 								/>
 								<Text
 									style={{
-										color: colors.desc,
+										color: "white",
 										fontSize: Sizes.h2,
 										marginVertical: 10,
 										fontWeight: "600",
@@ -244,24 +231,47 @@ const Account = ({ navigation }) => {
 										0{rider.phone}
 									</Text>
 								</View>
+								<View>
+									<Button
+										mode="contained"
+										buttonColor={"#000"}
+										textColor="#fff"
+										icon={"logout"}
+										style={{ marginVertical: 10 }}
+										onPress={showModal}
+									>
+										Logout
+									</Button>
+								</View>
 							</Card.Content>
 						</Card>
 					)}
 				</View>
 			</View>
-			<Footer />
+			<View style={styles.footer}>
+				<RiderFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
+	},
+	wrapper: {
+		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
-		width: Sizes.width - 20,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
 	},
 	center: {
 		display: "flex",
@@ -273,16 +283,18 @@ const styles = StyleSheet.create({
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: colors.primary,
+		borderRadius: 10,
 	},
 	cardText: {
 		fontSize: 15,
-		color: "dimgray",
+		color: "white",
 		fontWeight: "600",
 		letterSpacing: 5,
 	},
 	cardSubText: {
 		fontWeight: "700",
-		color: colors.primary,
+		color: "white",
 	},
 });
 

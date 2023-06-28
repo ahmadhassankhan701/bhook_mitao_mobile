@@ -19,7 +19,7 @@ const AssignedCard = ({
 	return (
 		<View style={{ marginVertical: 5 }}>
 			{/* <Text>{JSON.stringify(data, null, 4)}</Text> */}
-			<Card style={styles.card}>
+			{/* <Card style={styles.card}>
 				<Card.Title
 					title={data.detail.name}
 					subtitle={"Donor Phone: 0" + data.detail.phone}
@@ -131,6 +131,150 @@ const AssignedCard = ({
 								userId: data.userId,
 							})
 						}
+					/>
+				</Card.Actions>
+			</Card> */}
+			<Card style={styles.card}>
+				<Card.Title
+					title={"data.detail.name"}
+					subtitle={"Donor Phone: 0" + "data.detail.phone"}
+					left={() => {
+						return (
+							<Avatar.Text
+								size={50}
+								label={"data.detail.name[0]"}
+							/>
+						);
+					}}
+					right={() => {
+						return (
+							<Text style={{ paddingHorizontal: 10 }}>
+								{"data.status"}
+							</Text>
+						);
+					}}
+				/>
+				<Card.Content style={{ paddingHorizontal: 25 }}>
+					<Text variant="titleLarge">
+						For Persons: {"data.detail.quantity"}
+					</Text>
+					<Text variant="bodyMedium">
+						Desc: {"data.detail.desc"}
+					</Text>
+					<Text variant="bodyMedium">
+						Address: {"data.location.address"}
+					</Text>
+				</Card.Content>
+				<Card.Actions
+					style={{
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "space-around",
+						alignItems: "center",
+					}}
+				>
+					<IconButton
+						icon={"account"}
+						iconColor="white"
+						mode="contained"
+						containerColor={"green"}
+						size={18}
+					/>
+				</Card.Actions>
+			</Card>
+			<Card style={styles.card}>
+				<Card.Title
+					title={"data.detail.name"}
+					subtitle={"Donor Phone: 0" + "data.detail.phone"}
+					left={() => {
+						return (
+							<Avatar.Text
+								size={50}
+								label={"data.detail.name[0]"}
+							/>
+						);
+					}}
+					right={() => {
+						return (
+							<Text style={{ paddingHorizontal: 10 }}>
+								{"data.status"}
+							</Text>
+						);
+					}}
+				/>
+				<Card.Content style={{ paddingHorizontal: 25 }}>
+					<Text variant="titleLarge">
+						For Persons: {"data.detail.quantity"}
+					</Text>
+					<Text variant="bodyMedium">
+						Desc: {"data.detail.desc"}
+					</Text>
+					<Text variant="bodyMedium">
+						Address: {"data.location.address"}
+					</Text>
+				</Card.Content>
+				<Card.Actions
+					style={{
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "space-around",
+						alignItems: "center",
+					}}
+				>
+					<IconButton
+						icon={"account"}
+						iconColor="white"
+						mode="contained"
+						containerColor={"green"}
+						size={18}
+					/>
+				</Card.Actions>
+			</Card>
+			<Card style={styles.card}>
+				<Card.Title
+					title={"data.detail.name"}
+					subtitle={"Donor Phone: 0" + "data.detail.phone"}
+					left={() => {
+						return (
+							<Avatar.Text
+								size={50}
+								label={"data.detail.name[0]"}
+							/>
+						);
+					}}
+					right={() => {
+						return (
+							<Text style={{ paddingHorizontal: 10 }}>
+								{"data.status"}
+							</Text>
+						);
+					}}
+				/>
+				<Card.Content style={{ paddingHorizontal: 25 }}>
+					<Text variant="titleLarge">
+						For Persons: {"data.detail.quantity"}
+					</Text>
+					<Text variant="bodyMedium">
+						Desc: {"data.detail.desc"}
+					</Text>
+					<Text variant="bodyMedium">
+						Address: {"data.location.address"}
+					</Text>
+				</Card.Content>
+				<Card.Actions
+					style={{
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "space-around",
+						alignItems: "center",
+					}}
+				>
+					<IconButton
+						icon={"account"}
+						iconColor="white"
+						mode="contained"
+						containerColor={"green"}
+						size={18}
 					/>
 				</Card.Actions>
 			</Card>

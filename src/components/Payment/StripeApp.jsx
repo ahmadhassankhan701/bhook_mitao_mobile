@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-	View,
-	StyleSheet,
-	TextInput,
-	Button,
-	Alert,
-} from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import {
 	CardField,
 	useConfirmPayment,
@@ -20,7 +14,8 @@ import { db } from "../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { sendNotification } from "../../utils/Helpers/NotifyConfig";
+import { Sizes, colors } from "../../utils/theme";
+import { Button } from "react-native-paper";
 //ADD localhost address of your server
 const API_URL =
 	"http://127.0.0.1:5001/bhook-mita/us-central1/api";
@@ -37,7 +32,66 @@ const StripeApp = (props) => {
 	const userId = state && state.user && state.user.userId;
 	const token =
 		state && state.user && state.user.push_token;
+
 	const fetchPaymentIntentClientSecret = async () => {
+		try {
+			const response = await fetch(
+				`${API_URL}/create-payment-intent`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			const { clientSecret, error } = await response.json();
+			return { clientSecret, error };
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handlePayPress = async () => {
+		//1.Gather the customer's billing information (e.g., email)
+		if (!cardDetails?.complete || !email || !amount) {
+			alert(
+				"Please enter Complete card details, amount and Email"
+			);
+			return;
+		}
+		const billingDetails = {
+			email: email,
+		};
+		// 2.Fetch the intent client secret from the backend
+		try {
+			const { clientSecret, error } =
+				await fetchPaymentIntentClientSecret();
+			//2. confirm the payment
+			if (error) {
+				// console.log("Unable to process payment");
+				alert(error);
+			} else {
+				const { paymentIntent, error } =
+					await confirmPayment(clientSecret, {
+						type: "Card",
+						billingDetails: billingDetails,
+					});
+				if (error) {
+					alert(
+						`Payment Confirmation Error ${error.message}`
+					);
+				} else if (paymentIntent) {
+					alert("Payment Successful");
+					console.log("Payment successful ", paymentIntent);
+					saveMoneyDonation(paymentIntent);
+				}
+			}
+		} catch (e) {
+			console.log(e);
+		}
+		// 3.Confirm the payment with the card details
+	};
+	const saveMoneyDonation = async (paymentIntent) => {
 		try {
 			const donationsRef = collection(db, "Donations");
 			const request = {
@@ -56,114 +110,55 @@ const StripeApp = (props) => {
 				request
 			);
 			alert("Congrats! You just made a money donation");
-			await sendNotification(
-				token,
-				"Hurray!",
-				"You just made a money donation."
-			);
 			navigation.navigate("Activity");
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	// const fetchPaymentIntentClientSecret = async () => {
-	// 	try {
-	// 		const response = await fetch(
-	// 			`${API_URL}/create-payment-intent`,
-	// 			{
-	// 				method: "POST",
-	// 				headers: {
-	// 					"Content-Type": "application/json",
-	// 				},
-	// 			}
-	// 		);
-	// 		alert(response);
-	// 		return;
-	// 		const { clientSecret, error } = await response.json();
-	// 		return { clientSecret, error };
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
-
-	const handlePayPress = async () => {
-		//1.Gather the customer's billing information (e.g., email)
-		if (!cardDetails?.complete || !email || !amount) {
-			Alert.alert(
-				"Please enter Complete card details, amount and Email"
-			);
-			return;
-		}
-		const billingDetails = {
-			email: email,
-		};
-		await fetchPaymentIntentClientSecret();
-		//2.Fetch the intent client secret from the backend
-		// try {
-		// 	const { clientSecret, error } =
-		// 		await fetchPaymentIntentClientSecret();
-		// 	//2. confirm the payment
-		// 	if (error) {
-		// 		// console.log("Unable to process payment");
-		// 		alert(error);
-		// 	} else {
-		// 		alert(clientSecret);
-		// 		return;
-		// 		const { paymentIntent, error } =
-		// 			await confirmPayment(clientSecret, {
-		// 				type: "Card",
-		// 				billingDetails: billingDetails,
-		// 			});
-		// 		if (error) {
-		// 			alert(
-		// 				`Payment Confirmation Error ${error.message}`
-		// 			);
-		// 		} else if (paymentIntent) {
-		// 			alert("Payment Successful");
-		// 			console.log("Payment successful ", paymentIntent);
-		// 		}
-		// 	}
-		// } catch (e) {
-		// 	console.log(e);
-		// }
-		//3.Confirm the payment with the card details
-	};
 
 	return (
 		<View style={styles.container}>
-			<TextInput
-				autoCapitalize="none"
-				placeholder="E-mail *"
-				keyboardType="email-address"
-				onChange={(value) =>
-					setEmail(value.nativeEvent.text)
-				}
-				style={styles.input}
-			/>
-			<TextInput
-				placeholder="Amount (usd) *"
-				keyboardType="numeric"
-				onChange={(value) =>
-					setAmount(value.nativeEvent.text)
-				}
-				style={styles.input}
-			/>
-			<CardField
-				postalCodeEnabled={true}
-				placeholder={{
-					number: "4242 4242 4242 4242",
-				}}
-				cardStyle={styles.card}
-				style={styles.cardContainer}
-				onCardChange={(cardDetails) => {
-					setCardDetails(cardDetails);
-				}}
-			/>
-			<Button
-				onPress={handlePayPress}
-				title="Pay"
-				disabled={loading}
-			/>
+			<View style={styles.wrapper}>
+				<TextInput
+					autoCapitalize="none"
+					placeholder="E-mail *"
+					keyboardType="email-address"
+					onChange={(value) =>
+						setEmail(value.nativeEvent.text)
+					}
+					style={styles.input}
+				/>
+				<TextInput
+					placeholder="Amount (usd) *"
+					keyboardType="numeric"
+					onChange={(value) =>
+						setAmount(value.nativeEvent.text)
+					}
+					style={styles.input}
+				/>
+				<CardField
+					postalCodeEnabled={true}
+					placeholder={{
+						number: "4242 4242 4242 4242",
+					}}
+					cardStyle={styles.card}
+					style={styles.cardContainer}
+					onCardChange={(cardDetails) => {
+						setCardDetails(cardDetails);
+					}}
+				/>
+				<Button
+					onPress={handlePayPress}
+					disabled={loading}
+					textColor="#ffffff"
+					style={{
+						backgroundColor: colors.primary,
+						borderRadius: 10,
+					}}
+				>
+					Pay
+				</Button>
+			</View>
 		</View>
 	);
 };
@@ -173,7 +168,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",
-		margin: 20,
+		alignItems: "center",
+		backgroundColor: "#000",
+	},
+	wrapper: {
+		width: Sizes.width - 20,
 	},
 	input: {
 		backgroundColor: "#efefefef",
@@ -181,13 +180,14 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		height: 50,
 		padding: 10,
-		margin: 10,
+		marginVertical: 10,
 	},
 	card: {
 		backgroundColor: "#efefefef",
+		borderRadius: 10,
 	},
 	cardContainer: {
 		height: 50,
-		marginVertical: 30,
+		marginVertical: 20,
 	},
 });

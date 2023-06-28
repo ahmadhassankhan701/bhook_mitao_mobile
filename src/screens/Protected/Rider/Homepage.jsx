@@ -1,80 +1,32 @@
-import {
-	View,
-	Text,
-	StyleSheet,
-	ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import Footer from "../../../components/Footer";
-import { Sizes, colors } from "../../../utils/theme";
-import Done from "../../../components/Card/Done";
-import {
-	ActivityIndicator,
-	IconButton,
-	Modal,
-	Portal,
-} from "react-native-paper";
+import { Sizes } from "../../../utils/theme";
 import {
 	collectionGroup,
 	doc,
 	getDocs,
-	limit,
 	orderBy,
 	query,
-	startAfter,
 	updateDoc,
 	where,
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import * as Location from "expo-location";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import Header from "../../../components/Header";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LineChart } from "react-native-chart-kit";
+import { Card } from "react-native-paper";
+import RiderFooter from "../../../components/Footer";
+import * as Location from "expo-location";
+
 const Homepage = ({ navigation }) => {
-	const { state, setState } = useContext(AuthContext);
+	const { state } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
-	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
-	const containerStyle = {
-		backgroundColor: "white",
-		padding: 20,
-		width: Sizes.width - 80,
-		alignSelf: "center",
-	};
-	const userId = state && state.user && state.user.userId;
+	const userId =
+		state && state.user ? state.user.userId : "";
 	useEffect(() => {
 		watchRiderPosition();
-		const donations = query(
-			collectionGroup(db, "food"),
-			where("assignedTo.riderId", "==", `${userId}`),
-			where("status", "==", "done"),
-			orderBy("createdAt", "desc"),
-			limit(2)
-		);
-		setLoading(true);
-		getDocs(donations)
-			.then((querySnapshot) => {
-				let items = [];
-				if (querySnapshot.size == 0) {
-					setLoading(false);
-					setNextBtn(false);
-				} else {
-					setLoading(false);
-					setNextBtn(true);
-					querySnapshot.forEach((doc) => {
-						items.push({ key: doc.id, ...doc.data() });
-					});
-				}
-				setDonations(items);
-			})
-			.catch((error) => {
-				setLoading(true);
-				console.log(error);
-			});
+		getDonations();
 	}, []);
 	const watchRiderPosition = async () => {
 		await getPermissions();
@@ -119,192 +71,212 @@ const Homepage = ({ navigation }) => {
 			console.log(error);
 		}
 	};
-	const showNext = ({ item }) => {
-		const fetchNextData = async () => {
-			const donations = query(
-				collectionGroup(db, "food"),
-				where("assignedTo.riderId", "==", `${userId}`),
-				where("status", "==", "done"),
-				orderBy("createdAt", "desc"),
-				startAfter(item.createdAt),
-				limit(2)
-			);
-			try {
-				setLoading(true);
-				const querySnapshot = await getDocs(donations);
+	const getDonations = async () => {
+		setLoading(true);
+		const donations = query(
+			collectionGroup(db, "food"),
+			where("assignedTo.riderId", "==", `${userId}`),
+			where("status", "==", "done"),
+			orderBy("createdAt", "desc")
+		);
+		getDocs(donations)
+			.then((querySnapshot) => {
+				let items = [];
 				if (querySnapshot.size == 0) {
 					setLoading(false);
-					setNextBtn(false);
+					return;
 				} else {
-					setLoading(false);
-					setNextBtn(true);
 					querySnapshot.forEach((doc) => {
-						setDonations((donations) => [
-							...donations,
-							{ key: doc.id, ...doc.data() },
-						]);
+						items.push({ key: doc.id, ...doc.data() });
 					});
 				}
-			} catch (error) {
+				setDonations(items);
+				setLoading(false);
+			})
+			.catch((error) => {
+				setLoading(false);
 				console.log(error);
-			}
-		};
-		fetchNextData();
-	};
-	const handleLogout = async () => {
-		try {
-			const docRef = doc(db, `Riders`, `${userId}`);
-			await updateDoc(docRef, {
-				location: {
-					currentLocation: {
-						lat: 0,
-						lng: 0,
-					},
-				},
 			});
-			await AsyncStorage.removeItem("bhook_auth");
-			setState({ ...state, user: null });
-			navigation.navigate("Intro");
-		} catch (error) {
-			console.log(error);
-		}
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
-			<Portal>
-				<Modal
-					visible={visible}
-					onDismiss={hideModal}
-					contentContainerStyle={containerStyle}
-				>
+		<View style={styles.container}>
+			<View style={styles.main}>
+				<View style={styles.wrapper}>
+					<Text
+						style={{
+							marginTop: 10,
+							fontSize: 25,
+							color: "white",
+						}}
+					>
+						Hello, {state.user.name.toUpperCase()}
+					</Text>
+					<Text
+						style={{
+							marginVertical: 10,
+							fontSize: 15,
+							color: "#4C4E52",
+						}}
+					>
+						Welcome to Bhook Mitao
+					</Text>
 					<View>
-						<Text style={{ textAlign: "center" }}>
-							Are you sure you want to logout?
-						</Text>
-						<View
-							style={{
-								display: "flex",
-								flexDirection: "row",
-								justifyContent: "space-around",
-								alignItems: "center",
-							}}
-						>
-							<IconButton
-								icon={"check-circle"}
-								iconColor="green"
-								size={35}
-								onPress={handleLogout}
-							/>
-							<IconButton
-								icon={"close-circle"}
-								iconColor="red"
-								size={35}
-								onPress={hideModal}
+						<View style={{ marginVertical: 10 }}>
+							<Text
+								style={{
+									marginVertical: 10,
+									fontSize: 20,
+									textAlign: "center",
+									color: "white",
+								}}
+							>
+								Food Donations
+							</Text>
+							<LineChart
+								data={{
+									labels: [
+										"Mon",
+										"Tue",
+										"Wed",
+										"Thu",
+										"Fri",
+										"Sat",
+										"Sun",
+									],
+									datasets: [
+										{
+											data: [
+												Math.random() * 100,
+												Math.random() * 100,
+												Math.random() * 100,
+												Math.random() * 100,
+												Math.random() * 100,
+												Math.random() * 100,
+												Math.random() * 100,
+											],
+										},
+									],
+								}}
+								// data={{
+								// 	datasets: [
+								// 		{
+								// 			data: chartData,
+								// 		},
+								// 	],
+								// }}
+								width={Sizes.width - 20}
+								height={170}
+								yAxisInterval={1} // optional, defaults to 1
+								chartConfig={{
+									backgroundColor: "#4C4E52",
+									backgroundGradientFrom: "#6F7378",
+									backgroundGradientTo: "#4C4E52",
+									decimalPlaces: 0, // optional, defaults to 2dp
+									color: (opacity = 1) =>
+										`rgba(255, 255, 255, ${opacity})`,
+									labelColor: (opacity = 1) =>
+										`rgba(255, 255, 255, ${opacity})`,
+									style: {
+										borderRadius: 16,
+									},
+									propsForDots: {
+										r: "6",
+										strokeWidth: "2",
+										stroke: "#ffa726",
+									},
+								}}
+								bezier
+								style={{
+									borderRadius: 16,
+								}}
 							/>
 						</View>
 					</View>
-				</Modal>
-			</Portal>
-			<View>
-				<View style={styles.center}>
-					<Text
-						style={{
-							color: "#000000",
-							marginVertical: 5,
-							fontSize: 18,
-							fontWeight: "600",
-							lineHeight: 27,
-						}}
-					>
-						Donations Done
-					</Text>
-					<ScrollView
-						style={{
-							height: Sizes.height - 300,
-						}}
-						showsVerticalScrollIndicator={false}
-					>
-						<View>
-							{Object.keys(donations).length != 0 ? (
-								donations.map((val) => (
-									<Done data={val} key={val.key} />
-								))
-							) : (
-								<View
-									style={{
-										paddingTop: 200,
-										display: "flex",
-										flexDirection: "row",
-										alignItems: "center",
-									}}
-								>
-									<Text>No Donations Done Yet </Text>
-									<Text>
-										<IconButton icon={"charity"} />{" "}
-									</Text>
-								</View>
-							)}
-							{loading ? (
-								<ActivityIndicator
-									style={{ paddingTop: 50 }}
-									size={50}
-									animating={loading}
-									color={colors.primary}
-								/>
-							) : (
-								nextBtn && (
-									<View
-										style={{
-											display: "flex",
-											flexDirection: "row",
-											alignItems: "center",
-											justifyContent: "center",
-										}}
-									>
-										<IconButton
-											mode="contained"
-											icon={"chevron-down-circle"}
-											containerColor={colors.primary}
-											iconColor="white"
-											onPress={() =>
-												showNext({
-													item: donations[
-														donations.length - 1
-													],
-												})
-											}
-										/>
-									</View>
-								)
-							)}
-						</View>
-					</ScrollView>
+					<View>
+						<Text
+							style={{
+								marginVertical: 10,
+								fontSize: 20,
+								textAlign: "center",
+								color: "white",
+							}}
+						>
+							Statistics
+						</Text>
+						<Card
+							style={{
+								marginTop: 5,
+								backgroundColor: "#4C4E52",
+								borderRadius: 10,
+							}}
+						>
+							<Card.Content style={styles.CardContent}>
+								<Text style={styles.title}>Completed</Text>
+								<Text style={styles.value}>0</Text>
+							</Card.Content>
+						</Card>
+						<Card
+							style={{
+								marginTop: 5,
+								backgroundColor: "#4C4E52",
+								borderRadius: 10,
+							}}
+						>
+							<Card.Content style={styles.CardContent}>
+								<Text style={styles.title}>Accepted</Text>
+								<Text style={styles.value}>0</Text>
+							</Card.Content>
+						</Card>
+						<Card
+							style={{
+								marginTop: 5,
+								backgroundColor: "#4C4E52",
+								borderRadius: 10,
+							}}
+						>
+							<Card.Content style={styles.CardContent}>
+								<Text style={styles.title}>Rejected</Text>
+								<Text style={styles.value}>0</Text>
+							</Card.Content>
+						</Card>
+					</View>
 				</View>
 			</View>
-			<Footer />
+			<View style={styles.footer}>
+				<RiderFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
-		width: Sizes.width - 20,
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
 	},
-	center: {
+	wrapper: {
+		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
+	},
+	CardContent: {
 		display: "flex",
-		justifyContent: "center",
+		flexDirection: "row",
+		justifyContent: "space-between",
 		alignItems: "center",
+	},
+	title: {
+		fontSize: 15,
+		color: "white",
+	},
+	value: {
+		fontSize: 20,
+		color: "white",
 	},
 });
 

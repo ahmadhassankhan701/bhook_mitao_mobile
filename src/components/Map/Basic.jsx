@@ -65,9 +65,4 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		marginVertical: 10,
 	},
-	mapContainer: {
-		borderColor: "lightgray",
-		borderWidth: 1,
-		borderRadius: 20,
-	},
 });

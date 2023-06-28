@@ -10,11 +10,8 @@ import {
 	ActivityIndicator,
 	Button,
 	IconButton,
-	Modal,
-	Portal,
 } from "react-native-paper";
 import {
-	collection,
 	collectionGroup,
 	deleteDoc,
 	doc,
@@ -29,25 +26,14 @@ import {
 import { db, storage } from "../../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import Header from "../../../components/Header";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
 import EventsCard from "../../../components/Card/EventsCard";
 import { deleteObject, ref } from "firebase/storage";
 const Events = ({ navigation }) => {
-	const { state, setState } = useContext(AuthContext);
+	const { state } = useContext(AuthContext);
 	const [events, setEvents] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
-	const containerStyle = {
-		backgroundColor: "white",
-		padding: 20,
-		width: Sizes.width - 80,
-		alignSelf: "center",
-	};
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
@@ -107,15 +93,6 @@ const Events = ({ navigation }) => {
 		};
 		fetchNextData();
 	};
-	const handleLogout = async () => {
-		try {
-			await AsyncStorage.removeItem("bhook_auth");
-			setState({ ...state, user: null });
-			navigation.navigate("Intro");
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	const handleDelete = async (orgId, docId, path) => {
 		try {
 			await deleteImages(path);
@@ -136,49 +113,9 @@ const Events = ({ navigation }) => {
 		await deleteObject(fileRef);
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
-			<Portal>
-				<Modal
-					visible={visible}
-					onDismiss={hideModal}
-					contentContainerStyle={containerStyle}
-				>
-					<View>
-						<Text style={{ textAlign: "center" }}>
-							Are you sure you want to logout?
-						</Text>
-						<View
-							style={{
-								display: "flex",
-								flexDirection: "row",
-								justifyContent: "space-around",
-								alignItems: "center",
-							}}
-						>
-							<IconButton
-								icon={"check-circle"}
-								iconColor="green"
-								size={35}
-								onPress={handleLogout}
-							/>
-							<IconButton
-								icon={"close-circle"}
-								iconColor="red"
-								size={35}
-								onPress={hideModal}
-							/>
-						</View>
-					</View>
-				</Modal>
-			</Portal>
-			<View>
-				<View style={styles.center}>
+		<View style={styles.container}>
+			<View style={styles.main}>
+				<View style={styles.wrapper}>
 					<View
 						style={{
 							paddingTop: 10,
@@ -191,7 +128,7 @@ const Events = ({ navigation }) => {
 					>
 						<Text
 							style={{
-								color: "#000000",
+								color: "#fff",
 								marginVertical: 5,
 								fontSize: 18,
 								fontWeight: "600",
@@ -200,27 +137,31 @@ const Events = ({ navigation }) => {
 						>
 							Events
 						</Text>
-						<Text>
-							<Button
-								buttonColor={colors.primary}
-								icon={"plus"}
-								mode="contained"
-								onPress={() =>
-									navigation.navigate("AddEvents")
-								}
-							>
-								Add Events
-							</Button>
-						</Text>
+						<IconButton
+							onPress={() =>
+								navigation.navigate("AddEvents")
+							}
+							icon={"plus-circle"}
+							size={35}
+						/>
 					</View>
-
 					<ScrollView
 						style={{
-							height: Sizes.height - 280,
+							height: "87%",
+						}}
+						contentContainerStyle={{
+							justifyContent: "center",
+							alignItems: "center",
 						}}
 						showsVerticalScrollIndicator={false}
 					>
-						<View>
+						<View
+							style={{
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
 							{Object.keys(events).length != 0 ? (
 								events.map((val) => (
 									<EventsCard
@@ -238,7 +179,9 @@ const Events = ({ navigation }) => {
 										alignItems: "center",
 									}}
 								>
-									<Text>No Events Added Yet </Text>
+									<Text style={{ color: colors.primary }}>
+										No Events Added Yet{" "}
+									</Text>
 									<Text>
 										<IconButton icon={"calendar"} />{" "}
 									</Text>
@@ -279,19 +222,27 @@ const Events = ({ navigation }) => {
 					</ScrollView>
 				</View>
 			</View>
-			<SupplierFooter />
+			<View style={styles.footer}>
+				<SupplierFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
+	},
+	wrapper: {
 		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
 	},
 	center: {
 		display: "flex",

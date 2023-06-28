@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
 import { Button, Card } from "react-native-paper";
 import InputText from "../../../components/Input/InputText";
@@ -77,13 +77,7 @@ const Reset = ({ navigation }) => {
 			});
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
+		<View style={styles.container}>
 			<Card style={styles.card}>
 				<Card.Content style={styles.center}>
 					<InputText
@@ -111,7 +105,8 @@ const Reset = ({ navigation }) => {
 					<Button
 						icon="shield-key"
 						mode="contained"
-						buttonColor={colors.primary}
+						buttonColor={"#000"}
+						textColor="#fff"
 						style={{ marginVertical: 10 }}
 						onPress={handleSubmit}
 						loading={loading}
@@ -128,9 +123,15 @@ const Reset = ({ navigation }) => {
 export default Reset;
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#000",
+	},
 	card: {
 		width: Sizes.width - 20,
-		backgroundColor: "lightgray",
+		backgroundColor: colors.primary,
 	},
 	center: {
 		display: "flex",

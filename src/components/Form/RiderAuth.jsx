@@ -101,6 +101,7 @@ const RiderAuth = () => {
 						width: 150,
 						marginVertical: 10,
 						backgroundColor: colors.primary,
+						borderRadius: 10,
 					}}
 					loading={loading}
 					disabled={loading}

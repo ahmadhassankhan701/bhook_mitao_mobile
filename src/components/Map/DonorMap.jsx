@@ -92,6 +92,7 @@ const DonorMap = ({ location, handleChange }) => {
 						width: "50%",
 						alignSelf: "center",
 						marginTop: 30,
+						borderRadius: 10,
 					}}
 					mode="contained"
 					onPress={getPermissions}
@@ -191,9 +192,9 @@ const DonorMap = ({ location, handleChange }) => {
 							paddingHorizontal: 10,
 						},
 						row: {
-							marginVertical: 2,
-							borderBottomColor: `${colors.primary}`,
-							backgroundColor: "yellow",
+							marginVertical: 1,
+							borderBottomColor: "white",
+							backgroundColor: colors.primary,
 							borderBottomWidth: 2,
 						},
 					}}

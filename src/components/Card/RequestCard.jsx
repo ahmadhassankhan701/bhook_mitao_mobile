@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 const RequestCard = ({ data, mode }) => {
 	const navigation = useNavigation();
 	return (
-		<View style={{ marginVertical: 5 }}>
+		<View style={{ marginBottom: 20 }}>
 			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
 			<Card style={styles.card}>
 				<Card.Title
@@ -25,29 +25,44 @@ const RequestCard = ({ data, mode }) => {
 								size={50}
 								label={data.detail.name[0]?.toUpperCase()}
 								color={"white"}
-								style={{ backgroundColor: colors.primary }}
+								style={{ backgroundColor: "#000" }}
 							/>
 						);
 					}}
 					right={() => {
 						return (
-							<Text style={{ paddingHorizontal: 10 }}>
+							<Text
+								style={{
+									paddingHorizontal: 10,
+									color: "#fff",
+								}}
+							>
 								{data.status}
 							</Text>
 						);
 					}}
+					titleStyle={{ color: "white" }}
+					subtitleStyle={{ color: "white" }}
 				/>
 				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text>For Persons: {data.detail.quantity}</Text>
-					<Text>Desc: {data.detail.desc}</Text>
-					<Text>Address: {data.location.address}</Text>
-					<Text>Phone: 0{data.detail.phone}</Text>
+					<Text style={{ color: "#fff" }}>
+						For Persons: {data.detail.quantity}
+					</Text>
+					<Text style={{ color: "#fff" }}>
+						Desc: {data.detail.desc}
+					</Text>
+					<Text style={{ color: "#fff" }}>
+						Address: {data.location.address}
+					</Text>
+					<Text style={{ color: "#fff" }}>
+						Phone: 0{data.detail.phone}
+					</Text>
 				</Card.Content>
 				<Card.Actions>
 					<Button
 						icon={"account-arrow-right"}
 						mode="contained"
-						buttonColor={colors.primary}
+						buttonColor={"#000"}
 						onPress={
 							mode === "findRiders"
 								? () =>
@@ -66,7 +81,7 @@ const RequestCard = ({ data, mode }) => {
 							? "Find Riders"
 							: "Assign"}
 					</Button>
-					<Text>
+					<Text style={{ color: "#fff" }}>
 						{moment(
 							data.createdAt.seconds * 1000
 						).fromNow()}
@@ -84,5 +99,7 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		width: Sizes.width - 25,
 		padding: 2,
+		backgroundColor: colors.primary,
+		marginVertical: 10,
 	},
 });

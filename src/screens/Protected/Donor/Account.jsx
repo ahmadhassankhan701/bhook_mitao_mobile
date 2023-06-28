@@ -16,7 +16,6 @@ import {
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Header from "../../../components/Header";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../../firebase";
 import {
@@ -27,14 +26,14 @@ import {
 
 const Account = ({ navigation }) => {
 	const { state, setState } = useContext(AuthContext);
-	const [donor, setDonor] = useState({});
+	const [donor, setDonor] = useState(null);
 	const [uploadedImage, setUploadedImage] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
 	const containerStyle = {
-		backgroundColor: "white",
+		backgroundColor: colors.primary,
 		padding: 20,
 		width: Sizes.width - 80,
 		alignSelf: "center",
@@ -43,16 +42,26 @@ const Account = ({ navigation }) => {
 		const fetchDonor = async () => {
 			try {
 				setLoading(true);
-				setDonor(state.user);
-				setLoading(false);
+				const userRef = doc(
+					db,
+					"Auth/donor/users/",
+					`${state.user.userId}`
+				);
+				const docSnap = await getDoc(userRef);
+				if (docSnap.exists()) {
+					setLoading(false);
+					const userData = docSnap.data();
+					setDonor(userData);
+				} else {
+					setLoading(false);
+					navigation.navigate("Homepage");
+				}
 			} catch (error) {
 				console.log(error);
 			}
 		};
 		state && state.user && fetchDonor();
 	}, [state && state.user]);
-	const userId =
-		state && state.user ? state.user.userId : "";
 	const handleLogout = async () => {
 		try {
 			await AsyncStorage.removeItem("bhook_auth");
@@ -80,7 +89,7 @@ const Account = ({ navigation }) => {
 		if (pickerResult.canceled === true) {
 			return;
 		}
-		const path = `Profiles/${donor.category}/${
+		const path = `Profiles/donor/${
 			donor.userId
 		}/${Date.now()}`;
 		const img = await uploadImage(
@@ -111,26 +120,15 @@ const Account = ({ navigation }) => {
 	const saveImage = async (img) => {
 		const donorDoc = doc(
 			db,
-			`Auth/${donor.category}/users/`,
-			`${donor.userId}`
+			`Auth/donor/users/`,
+			`${state.user.userId}`
 		);
 		await updateDoc(donorDoc, {
 			image: img,
 		});
-		donor.image = img;
-		await AsyncStorage.setItem(
-			"bhook_auth",
-			JSON.stringify(donor)
-		);
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
+		<View style={styles.container}>
 			<Portal>
 				<Modal
 					visible={visible}
@@ -138,7 +136,12 @@ const Account = ({ navigation }) => {
 					contentContainerStyle={containerStyle}
 				>
 					<View>
-						<Text style={{ textAlign: "center" }}>
+						<Text
+							style={{
+								textAlign: "center",
+								color: "white",
+							}}
+						>
 							Are you sure you want to logout?
 						</Text>
 						<View
@@ -165,8 +168,12 @@ const Account = ({ navigation }) => {
 					</View>
 				</Modal>
 			</Portal>
-			<View>
-				<View style={styles.center}>
+			<View style={styles.main}>
+				{/* <Text style={{ color: "white" }}>
+					{JSON.stringify(donor, null, 4)}
+				</Text> */}
+
+				<View style={styles.wrapper}>
 					{loading ? (
 						<ActivityIndicator
 							style={{ paddingTop: 50 }}
@@ -175,85 +182,108 @@ const Account = ({ navigation }) => {
 							color={colors.primary}
 						/>
 					) : (
-						<Card style={styles.card}>
-							<Card.Content style={styles.center}>
-								<Avatar.Image
-									size={100}
-									source={
-										uploadedImage != ""
-											? { uri: uploadedImage }
-											: donor.image != ""
-											? { uri: donor.image }
-											: require("../../../assets/donorLogo.jpg")
-									}
-									style={{ marginVertical: 20 }}
-								/>
-								<IconButton
-									icon={"camera"}
-									mode="contained"
-									containerColor={colors.primary}
-									iconColor="white"
-									onPress={handleImage}
-								/>
-								<Text
-									style={{
-										color: colors.desc,
-										fontSize: Sizes.h2,
-										marginVertical: 5,
-										fontWeight: "600",
-										letterSpacing: 5,
-									}}
-								>
-									Donor
-								</Text>
-								<View>
-									<Text style={styles.cardText}>
-										<Text style={styles.cardSubText}>
-											Name:
-										</Text>{" "}
-										{donor.name}
+						donor && (
+							<Card style={styles.card}>
+								<Card.Content style={styles.center}>
+									<Avatar.Image
+										size={100}
+										source={
+											uploadedImage != ""
+												? { uri: uploadedImage }
+												: donor.image != ""
+												? { uri: donor.image }
+												: require("../../../assets/donorLogo.jpg")
+										}
+										style={{ marginVertical: 20 }}
+									/>
+									<IconButton
+										icon={"camera"}
+										mode="contained"
+										containerColor={"#000"}
+										iconColor="white"
+										onPress={handleImage}
+									/>
+									<Text
+										style={{
+											color: "white",
+											fontSize: Sizes.h2,
+											marginVertical: 5,
+											fontWeight: "600",
+											letterSpacing: 5,
+										}}
+									>
+										Donor
 									</Text>
-									<Text style={styles.cardText}>
-										<Text style={styles.cardSubText}>
-											Email:
+									<View>
+										<Text style={styles.cardText}>
+											<Text style={styles.cardSubText}>
+												Name:
+											</Text>{" "}
+											{donor.name}
 										</Text>
-										{donor.email}
-									</Text>
-								</View>
-								{state.user &&
-									state.user.provider &&
-									state.user.provider == "custom" && (
-										<Button
-											icon="shield-key"
-											mode="contained"
-											buttonColor={colors.primary}
-											style={{ marginVertical: 10 }}
-											onPress={() =>
-												navigation.navigate("Reset")
-											}
-										>
-											Reset Password
-										</Button>
-									)}
-							</Card.Content>
-						</Card>
+										<Text style={styles.cardText}>
+											<Text style={styles.cardSubText}>
+												Email:
+											</Text>
+											{donor.email}
+										</Text>
+									</View>
+									{state.user &&
+										state.user.provider &&
+										state.user.provider == "custom" && (
+											<Button
+												icon="shield-key"
+												mode="contained"
+												buttonColor={"#000"}
+												textColor="#fff"
+												style={{ marginVertical: 10 }}
+												onPress={() =>
+													navigation.navigate("Reset")
+												}
+											>
+												Reset Password
+											</Button>
+										)}
+									<Button
+										mode="contained"
+										icon={"logout"}
+										buttonColor="#000"
+										textColor="#fff"
+										style={{ marginVertical: 10 }}
+										onPress={showModal}
+									>
+										Logout
+									</Button>
+								</Card.Content>
+							</Card>
+						)
 					)}
 				</View>
 			</View>
-			{/* <Footer /> */}
-			<DonorFooter />
+			<View style={styles.footer}>
+				<DonorFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
+	},
+	wrapper: {
+		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
-		width: Sizes.width - 20,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
 	},
 	center: {
 		display: "flex",
@@ -265,17 +295,19 @@ const styles = StyleSheet.create({
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: colors.primary,
+		borderRadius: 10,
 	},
 	cardText: {
 		fontSize: 15,
-		color: "dimgray",
+		color: "white",
 		fontWeight: "600",
 		letterSpacing: 2,
 		textAlign: "left",
 	},
 	cardSubText: {
 		fontWeight: "700",
-		color: colors.primary,
+		color: "white",
 	},
 });
 

@@ -4,6 +4,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { activateNotify } from "./NotifyConfig";
 
 export const signUpGoogle = async (accessToken, categ) => {
 	const credential = GoogleAuthProvider.credential(
@@ -18,9 +19,11 @@ export const signUpGoogle = async (accessToken, categ) => {
 	const docSnap = await getDoc(docRef);
 	let userData = {};
 	if (docSnap.exists()) {
+		const push_token = await activateNotify(docRef);
 		userData = {
 			userId: user.uid,
 			provider: "social",
+			push_token,
 			...docSnap.data(),
 		};
 	} else {
@@ -30,8 +33,10 @@ export const signUpGoogle = async (accessToken, categ) => {
 			email: user.email,
 			image: user.photoURL,
 		});
+		const push_token = await activateNotify(docRef);
 		userData = {
 			userId: user.uid,
+			push_token,
 			provider: "social",
 			category: categ,
 			name: user.displayName,
@@ -57,8 +62,10 @@ export const signUpGoogleSup = async (
 	const docSnap = await getDoc(docRef);
 	let userData = {};
 	if (docSnap.exists()) {
+		const push_token = await activateNotify(docRef);
 		userData = {
 			userId: user.uid,
+			push_token,
 			city: user.city,
 			provider: "social",
 			registered: true,

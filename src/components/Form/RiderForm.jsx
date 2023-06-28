@@ -137,6 +137,7 @@ const RiderForm = ({
 									marginVertical: 10,
 									backgroundColor: colors.primary,
 									color: "white",
+									borderRadius: 10,
 								}}
 								loading={loading}
 								disabled={loading}

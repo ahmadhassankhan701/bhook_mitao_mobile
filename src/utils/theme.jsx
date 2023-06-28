@@ -3,7 +3,7 @@ import { Dimensions } from "react-native";
 const { width, height } = Dimensions.get("screen");
 
 export const colors = {
-	primary: "rgba(255, 171, 13, 1)",
+	primary: "#6F7378",
 	secondary: "rgba(196, 196, 196, 0.15)",
 	title: "rgba(0, 0, 0, 1)",
 	desc: "rgba(104, 104, 104, 1)",

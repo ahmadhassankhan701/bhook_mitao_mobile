@@ -11,6 +11,7 @@ import EditFood from "../../screens/Protected/Donor/EditFood/EditFood";
 import Money from "../../screens/Protected/Donor/Money";
 import FoodFinal from "../../screens/Protected/Donor/FoodFinal";
 import TrackRider from "../../screens/Protected/Donor/TrackRider";
+import FoodFinalOrg from "../../screens/Protected/Donor/FoodFinalOrg";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,10 @@ const index = () => {
 				<Stack.Screen
 					name="FoodFinal"
 					component={FoodFinal}
+				/>
+				<Stack.Screen
+					name="FoodFinalOrg"
+					component={FoodFinalOrg}
 				/>
 			</Stack.Navigator>
 		</>

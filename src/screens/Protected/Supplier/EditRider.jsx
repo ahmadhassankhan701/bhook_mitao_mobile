@@ -217,13 +217,7 @@ const EditRider = ({ navigation, route }) => {
 		return null;
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
+		<View style={styles.container}>
 			<RiderForm
 				detail={detail}
 				error={error}
@@ -242,4 +236,11 @@ const EditRider = ({ navigation, route }) => {
 
 export default EditRider;
 
-const styles = StyleSheet.create();
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#000",
+	},
+});

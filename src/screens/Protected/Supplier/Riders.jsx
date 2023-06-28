@@ -10,8 +10,6 @@ import {
 	ActivityIndicator,
 	Button,
 	IconButton,
-	Modal,
-	Portal,
 } from "react-native-paper";
 import {
 	collection,
@@ -28,24 +26,13 @@ import {
 import { db } from "../../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import Header from "../../../components/Header";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
 import RidersCard from "../../../components/Card/RidersCard";
 const Riders = ({ navigation }) => {
-	const { state, setState } = useContext(AuthContext);
+	const { state } = useContext(AuthContext);
 	const [riders, setRiders] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
-	const containerStyle = {
-		backgroundColor: "white",
-		padding: 20,
-		width: Sizes.width - 80,
-		alignSelf: "center",
-	};
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
@@ -105,15 +92,6 @@ const Riders = ({ navigation }) => {
 		};
 		fetchNextData();
 	};
-	const handleLogout = async () => {
-		try {
-			await AsyncStorage.removeItem("bhook_auth");
-			setState({ ...state, user: null });
-			navigation.navigate("Intro");
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	const handleDelete = async (id) => {
 		try {
 			await deleteDoc(doc(db, `Riders`, `${id}`));
@@ -124,49 +102,9 @@ const Riders = ({ navigation }) => {
 		}
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
-			<Portal>
-				<Modal
-					visible={visible}
-					onDismiss={hideModal}
-					contentContainerStyle={containerStyle}
-				>
-					<View>
-						<Text style={{ textAlign: "center" }}>
-							Are you sure you want to logout?
-						</Text>
-						<View
-							style={{
-								display: "flex",
-								flexDirection: "row",
-								justifyContent: "space-around",
-								alignItems: "center",
-							}}
-						>
-							<IconButton
-								icon={"check-circle"}
-								iconColor="green"
-								size={35}
-								onPress={handleLogout}
-							/>
-							<IconButton
-								icon={"close-circle"}
-								iconColor="red"
-								size={35}
-								onPress={hideModal}
-							/>
-						</View>
-					</View>
-				</Modal>
-			</Portal>
-			<View>
-				<View style={styles.center}>
+		<View style={styles.container}>
+			<View style={styles.main}>
+				<View style={styles.wrapper}>
 					<View
 						style={{
 							paddingTop: 10,
@@ -179,7 +117,7 @@ const Riders = ({ navigation }) => {
 					>
 						<Text
 							style={{
-								color: "#000000",
+								color: "#fff",
 								marginVertical: 5,
 								fontSize: 18,
 								fontWeight: "600",
@@ -188,96 +126,105 @@ const Riders = ({ navigation }) => {
 						>
 							Riders
 						</Text>
-						<Text>
-							<Button
-								buttonColor={colors.primary}
-								icon={"plus"}
-								mode="contained"
-								onPress={() =>
-									navigation.navigate("AddRider")
-								}
-							>
-								Add Rider
-							</Button>
-						</Text>
+						<IconButton
+							onPress={() =>
+								navigation.navigate("AddRider")
+							}
+							icon={"plus-circle"}
+							size={35}
+						/>
 					</View>
-
-					<ScrollView
-						style={{ height: Sizes.height - 300 }}
-						showsVerticalScrollIndicator={false}
+					<View
+						style={{
+							height: "87%",
+						}}
 					>
-						<View>
-							{Object.keys(riders).length != 0 ? (
-								riders.map((val) => (
-									<RidersCard
-										data={val}
-										key={val.key}
-										handleDelete={handleDelete}
-									/>
-								))
-							) : (
-								<View
-									style={{
-										paddingTop: 200,
-										display: "flex",
-										flexDirection: "row",
-										alignItems: "center",
-									}}
-								>
-									<Text>No Riders Added Yet </Text>
-									<Text>
-										<IconButton icon={"racing-helmet"} />{" "}
-									</Text>
-								</View>
-							)}
-							{loading ? (
-								<ActivityIndicator
-									style={{ paddingTop: 50 }}
-									size={50}
-									animating={loading}
-									color={colors.primary}
-								/>
-							) : (
-								nextBtn && (
+						<ScrollView
+							showsVerticalScrollIndicator={false}
+						>
+							<View style={styles.center}>
+								{Object.keys(riders).length != 0 ? (
+									riders.map((val) => (
+										<RidersCard
+											data={val}
+											key={val.key}
+											handleDelete={handleDelete}
+										/>
+									))
+								) : (
 									<View
 										style={{
+											paddingTop: 200,
 											display: "flex",
 											flexDirection: "row",
 											alignItems: "center",
-											justifyContent: "center",
 										}}
 									>
-										<IconButton
-											mode="contained"
-											icon={"chevron-down-circle"}
-											containerColor={colors.primary}
-											iconColor="white"
-											onPress={() =>
-												showNext({
-													item: riders[riders.length - 1],
-												})
-											}
-										/>
+										<Text style={{ color: colors.primary }}>
+											No Riders Added Yet{" "}
+										</Text>
+										<Text>
+											<IconButton icon={"racing-helmet"} />{" "}
+										</Text>
 									</View>
-								)
-							)}
-						</View>
-					</ScrollView>
+								)}
+								{loading ? (
+									<ActivityIndicator
+										style={{ paddingTop: 50 }}
+										size={50}
+										animating={loading}
+										color={colors.primary}
+									/>
+								) : (
+									nextBtn && (
+										<View
+											style={{
+												display: "flex",
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "center",
+											}}
+										>
+											<IconButton
+												mode="contained"
+												icon={"chevron-down-circle"}
+												containerColor={colors.primary}
+												iconColor="white"
+												onPress={() =>
+													showNext({
+														item: riders[riders.length - 1],
+													})
+												}
+											/>
+										</View>
+									)
+								)}
+							</View>
+						</ScrollView>
+					</View>
 				</View>
 			</View>
-			<SupplierFooter />
+			<View style={styles.footer}>
+				<SupplierFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
+	},
+	wrapper: {
 		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
 	},
 	center: {
 		display: "flex",

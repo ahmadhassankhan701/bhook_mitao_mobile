@@ -51,6 +51,7 @@ const Locate = ({ navigation, route }) => {
 				flex: 1,
 				justifyContent: "center",
 				alignItems: "center",
+				backgroundColor: "#000",
 			}}
 		>
 			{/* <Text>{JSON.stringify(donation, null, 4)}</Text> */}

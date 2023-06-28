@@ -1,6 +1,6 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { deleteField, updateDoc } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 import { Platform } from "react-native";
 import axios from "axios";
 
@@ -63,7 +63,7 @@ export const sendNotification = async (
 export const activateNotify = async (userRef) => {
 	const token = await registerForPushNotificationsAsync();
 	if (!token) {
-		return;
+		return "";
 	}
 	try {
 		await updateDoc(userRef, { push_token: token });

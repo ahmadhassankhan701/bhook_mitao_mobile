@@ -195,7 +195,9 @@ const DonorAuth = () => {
 						marginHorizontal: 10,
 					}}
 				>
-					<Text>Not a member?</Text>
+					<Text style={{ color: "white" }}>
+						Not a member?
+					</Text>
 					<TouchableOpacity
 						onPress={() =>
 							navigation.navigate("DonorRegister")
@@ -204,7 +206,7 @@ const DonorAuth = () => {
 						<Text
 							style={{
 								paddingHorizontal: 5,
-								color: "#4285f4",
+								color: colors.primary,
 							}}
 						>
 							Register
@@ -220,7 +222,7 @@ const DonorAuth = () => {
 				>
 					<View
 						style={{
-							width: 120,
+							width: 130,
 							height: 1,
 							backgroundColor: "gray",
 						}}
@@ -228,10 +230,10 @@ const DonorAuth = () => {
 					<View>
 						<Text
 							style={{
-								width: 70,
+								width: 50,
 								textAlign: "center",
 								backgroundColor: `${colors.primary}`,
-								borderRadius: 100,
+								borderRadius: 10,
 								padding: 15,
 								color: "white",
 							}}
@@ -241,28 +243,26 @@ const DonorAuth = () => {
 					</View>
 					<View
 						style={{
-							width: 100,
+							width: 130,
 							height: 1,
 							backgroundColor: "gray",
 						}}
 					/>
 				</View>
 				<View>
-					<TouchableOpacity
+					<Button
+						mode="outlined"
+						textColor={"lightgray"}
+						style={{
+							borderColor: "lightgray",
+							marginVertical: 10,
+						}}
+						icon={"google"}
 						onPress={() => promptAsync()}
 						disabled={!request}
-						style={styles.google_btn}
 					>
-						<View style={styles.google_icon_wrapper}>
-							<Image
-								style={styles.google_icon}
-								source={require("../../assets/googleLogin.png")}
-							/>
-						</View>
-						<Text style={styles.btn_text}>
-							Sign in with google
-						</Text>
-					</TouchableOpacity>
+						Sign in with google
+					</Button>
 				</View>
 			</View>
 		</KeyboardAvoidingView>
@@ -273,10 +273,10 @@ export default DonorAuth;
 
 const styles = StyleSheet.create({
 	google_btn: {
-		width: 230,
+		width: Sizes.width - 50,
 		height: 45,
-		backgroundColor: "#4285f4",
-		borderRadius: 2,
+		backgroundColor: colors.primary,
+		borderRadius: 10,
 		display: "flex",
 		flexDirection: "row",
 		boxShadow: "0 3px 4px 0 rgba(0, 0, 0, 0.25)",
@@ -290,7 +290,8 @@ const styles = StyleSheet.create({
 		marginLeft: 1,
 		width: 40,
 		height: 40,
-		borderRadius: 2,
+		borderTopLeftRadius: 5,
+		borderBottomLeftRadius: 5,
 		backgroundColor: "#fff",
 	},
 	google_icon: {
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		margin: 11,
 		marginRight: 11,
-		fontSize: 14,
+		fontSize: 15,
 		fontWeight: "bold",
 		fontFamily: "Roboto",
 		letterSpacing: 0.2,

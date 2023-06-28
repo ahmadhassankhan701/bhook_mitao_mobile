@@ -26,6 +26,7 @@ import {
 	sendEmailVerification,
 	signInWithEmailAndPassword,
 } from "firebase/auth";
+import { activateNotify } from "../../utils/Helpers/NotifyConfig";
 WebBrowser.maybeCompleteAuthSession();
 
 const SupplierAuth = () => {
@@ -133,13 +134,15 @@ const SupplierAuth = () => {
 						setLoading(false);
 						return false;
 					}
+					const token = await activateNotify(docRef);
 					const user = {
 						userId: users.uid,
 						category: res.category,
 						email: res.email,
 						image: res.image,
 						name: res.name,
-						city: res.city,
+						location: res.location,
+						push_token: token,
 						provider: "custom",
 					};
 					const stateData = { user };
@@ -200,6 +203,7 @@ const SupplierAuth = () => {
 							marginVertical: 10,
 							backgroundColor: colors.primary,
 							color: "white",
+							borderRadius: 10,
 						}}
 						loading={loading}
 						disabled={loading}
@@ -216,7 +220,9 @@ const SupplierAuth = () => {
 						marginHorizontal: 10,
 					}}
 				>
-					<Text>Not a member?</Text>
+					<Text style={{ color: "#fff" }}>
+						Not a member?
+					</Text>
 					<TouchableOpacity
 						onPress={() =>
 							navigation.navigate("SupplierRegister")
@@ -225,7 +231,7 @@ const SupplierAuth = () => {
 						<Text
 							style={{
 								paddingHorizontal: 5,
-								color: "#4285f4",
+								color: colors.primary,
 							}}
 						>
 							Register
@@ -269,21 +275,19 @@ const SupplierAuth = () => {
 					/>
 				</View>
 				<View>
-					<TouchableOpacity
+					<Button
+						mode="outlined"
+						textColor={"lightgray"}
+						style={{
+							borderColor: "lightgray",
+							marginVertical: 10,
+						}}
+						icon={"google"}
 						onPress={() => promptAsync()}
 						disabled={!request}
-						style={styles.google_btn}
 					>
-						<View style={styles.google_icon_wrapper}>
-							<Image
-								style={styles.google_icon}
-								source={require("../../assets/googleLogin.png")}
-							/>
-						</View>
-						<Text style={styles.btn_text}>
-							Sign up with google
-						</Text>
-					</TouchableOpacity>
+						Sign in with google
+					</Button>
 				</View>
 			</View>
 		</KeyboardAvoidingView>

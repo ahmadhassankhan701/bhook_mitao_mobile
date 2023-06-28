@@ -34,22 +34,35 @@ const DonorActivity = ({
 					}}
 					right={() => {
 						return (
-							<Text style={{ paddingHorizontal: 10 }}>
+							<Text
+								style={{
+									paddingHorizontal: 10,
+									color: "#fff",
+								}}
+							>
 								{data.status}
 							</Text>
 						);
 					}}
+					titleStyle={{ color: "white" }}
+					subtitleStyle={{ color: "white" }}
 				/>
 				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text>Desc: {data.detail.desc}</Text>
-					<Text>For Persons: {data.detail.quantity}</Text>
-					<Text>Address: {data.location.address}</Text>
+					<Text style={{ color: "#fff" }}>
+						Desc: {data.detail.desc}
+					</Text>
+					<Text style={{ color: "#fff" }}>
+						For Persons: {data.detail.quantity}
+					</Text>
+					<Text style={{ color: "#fff" }}>
+						Address: {data.location.address}
+					</Text>
 					{data.status == "started" && (
 						<>
-							<Text>
+							<Text style={{ color: "#fff" }}>
 								Rider Name: {data.assignedTo.name}
 							</Text>
-							<Text>
+							<Text style={{ color: "#fff" }}>
 								Rider Phone: 0{data.assignedTo.phone}
 							</Text>
 						</>
@@ -59,23 +72,10 @@ const DonorActivity = ({
 					{data.status == "requested" ? (
 						<>
 							<IconButton
-								icon={"pencil"}
-								mode="contained"
-								iconColor="blue"
-								size={20}
-								containerColor="transparent"
-								onPress={() =>
-									navigation.navigate("EditFood", {
-										userId: data.userId,
-										docId: data.key,
-									})
-								}
-							/>
-							<IconButton
 								icon={"delete"}
 								mode="contained"
-								iconColor="red"
-								containerColor="transparent"
+								iconColor="white"
+								containerColor="red"
 								size={20}
 								onPress={() =>
 									handleDelete(data.userId, data.key)
@@ -87,7 +87,7 @@ const DonorActivity = ({
 							icon={"map-marker-radius"}
 							mode="contained"
 							iconColor="white"
-							containerColor={colors.primary}
+							containerColor={"blue"}
 							size={20}
 							onPress={() =>
 								navigation.navigate("TrackRider", {
@@ -100,7 +100,9 @@ const DonorActivity = ({
 							}
 						/>
 					) : data.status == "assigned" ? (
-						<Text>Waiting for rider</Text>
+						<Text style={{ color: "#ffffff" }}>
+							Waiting for rider
+						</Text>
 					) : (
 						<IconButton
 							icon={"racing-helmet"}
@@ -149,5 +151,8 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		width: Sizes.width - 25,
 		padding: 2,
+		backgroundColor: colors.primary,
+		color: "white",
+		marginVertical: 5,
 	},
 });

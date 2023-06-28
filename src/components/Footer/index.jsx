@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
 	useNavigation,
 	useRoute,
 } from "@react-navigation/native";
-import { Divider } from "react-native-elements";
 
 export const Tab = ({
 	name,
@@ -14,40 +13,77 @@ export const Tab = ({
 	screenName,
 	routeName,
 }) => {
-	const activeScreenColor =
-		screenName === routeName ? "orange" : "gray";
+	const activeScreenBgColor =
+		screenName === routeName ? "#6F7378" : "transparent";
+	const activeTopMargin =
+		screenName === routeName ? -25 : 0;
+	const activePadding = screenName === routeName ? 12 : 0;
+	const activeBorderWidth =
+		screenName === routeName ? 3 : 0;
 
 	return (
-		<TouchableOpacity onPress={handlePress}>
-			<FontAwesome5
-				name={name}
-				size={25}
+		<TouchableOpacity
+			onPress={handlePress}
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<View
 				style={{
-					marginBottom: 3,
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
 					alignSelf: "center",
+					borderRadius: 50,
+					padding: activePadding,
+					marginTop: activeTopMargin,
+					borderWidth: activeBorderWidth,
+					borderColor: "#000000",
+					backgroundColor: activeScreenBgColor,
 				}}
-				color={activeScreenColor}
-			/>
-			<Text style={{ color: activeScreenColor }}>
+			>
+				<FontAwesome5
+					name={name}
+					size={20}
+					color={"#fff"}
+				/>
+			</View>
+			<Text
+				style={{
+					color: "#fff",
+					alignSelf: "center",
+					fontFamily: "Montserrat-Regular",
+					fontSize: 12,
+					lineHeight: 16,
+				}}
+			>
 				{text}
 			</Text>
 		</TouchableOpacity>
 	);
 };
 
-export default function index() {
+export default function RiderFooter() {
 	const navigation = useNavigation();
 	const route = useRoute();
 
 	return (
-		<View>
-			<Divider width={1} />
+		<View
+			style={{
+				backgroundColor: "#6F7378",
+				paddingVertical: 25,
+				borderTopEndRadius: 24,
+				borderTopStartRadius: 24,
+			}}
+		>
 			<View
 				style={{
 					flexDirection: "row",
-					margin: 10,
-					marginHorizontal: 30,
-					justifyContent: "space-between",
+					paddingVertical: 10,
+					justifyContent: "space-around",
+					backgroundColor: "#000000",
 				}}
 			>
 				<Tab

@@ -36,7 +36,7 @@ const EventForm = ({
 				source={
 					uploadedImage != ""
 						? { uri: uploadedImage }
-						: require("../../assets/org.jpeg")
+						: require("../../assets/events.jpeg")
 				}
 				style={{ marginVertical: 30 }}
 			/>
@@ -85,6 +85,7 @@ const EventForm = ({
 									marginVertical: 10,
 									backgroundColor: colors.primary,
 									color: "white",
+									borderRadius: 10,
 								}}
 								loading={loading}
 								disabled={loading}

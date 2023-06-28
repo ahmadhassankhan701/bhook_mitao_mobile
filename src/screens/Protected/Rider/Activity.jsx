@@ -5,21 +5,20 @@ import {
 	ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Footer from "../../../components/Footer";
 import { Sizes, colors } from "../../../utils/theme";
 import {
 	ActivityIndicator,
 	IconButton,
-	Modal,
-	Portal,
 } from "react-native-paper";
 import {
+	and,
 	collectionGroup,
 	deleteField,
 	doc,
 	getDocs,
 	limit,
 	onSnapshot,
+	or,
 	orderBy,
 	query,
 	serverTimestamp,
@@ -30,31 +29,27 @@ import {
 import { db } from "../../../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Header from "../../../components/Header";
 import AssignedCard from "../../../components/Card/AssignedCard";
+import RiderFooter from "../../../components/Footer";
 const Activity = ({ navigation }) => {
-	const { state, setState } = useContext(AuthContext);
+	const { state } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [denyloading, setDenyloading] = useState(false);
-	const [visible, setVisible] = useState(false);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
-	const containerStyle = {
-		backgroundColor: "white",
-		padding: 20,
-		width: Sizes.width - 80,
-		alignSelf: "center",
-	};
 	const userId = state && state.user && state.user.userId;
 	useEffect(() => {
 		const donations = query(
 			collectionGroup(db, "food"),
-			where("assignedTo.riderId", "==", `${userId}`),
-			where("status", "!=", "done"),
-			orderBy("status", "desc"),
+			and(
+				where("assignedTo.riderId", "==", `${userId}`),
+				or(
+					where("status", "==", "requested"),
+					where("status", "==", "pending"),
+					where("status", "==", "assigned"),
+					where("status", "==", "started")
+				)
+			),
 			orderBy("createdAt", "desc"),
 			limit(2)
 		);
@@ -78,9 +73,15 @@ const Activity = ({ navigation }) => {
 		const fetchNextData = async () => {
 			const donations = query(
 				collectionGroup(db, "food"),
-				where("assignedTo.riderId", "==", `${userId}`),
-				where("status", "!=", "done"),
-				orderBy("status", "desc"),
+				and(
+					where("assignedTo.riderId", "==", `${userId}`),
+					or(
+						where("status", "==", "requested"),
+						where("status", "==", "pending"),
+						where("status", "==", "assigned"),
+						where("status", "==", "started")
+					)
+				),
 				orderBy("createdAt", "desc"),
 				startAfter(item.createdAt),
 				limit(2)
@@ -106,24 +107,6 @@ const Activity = ({ navigation }) => {
 			}
 		};
 		fetchNextData();
-	};
-	const handleLogout = async () => {
-		try {
-			const docRef = doc(db, `Riders`, `${userId}`);
-			await updateDoc(docRef, {
-				location: {
-					currentLocation: {
-						lat: 0,
-						lng: 0,
-					},
-				},
-			});
-			await AsyncStorage.removeItem("bhook_auth");
-			setState({ ...state, user: null });
-			navigation.navigate("Intro");
-		} catch (error) {
-			console.log(error);
-		}
 	};
 	const handleDeny = async (docId, userId) => {
 		try {
@@ -192,52 +175,12 @@ const Activity = ({ navigation }) => {
 		}
 	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "space-between",
-			}}
-		>
-			<Header showModal={showModal} />
-			<Portal>
-				<Modal
-					visible={visible}
-					onDismiss={hideModal}
-					contentContainerStyle={containerStyle}
-				>
-					<View>
-						<Text style={{ textAlign: "center" }}>
-							Are you sure you want to logout?
-						</Text>
-						<View
-							style={{
-								display: "flex",
-								flexDirection: "row",
-								justifyContent: "space-around",
-								alignItems: "center",
-							}}
-						>
-							<IconButton
-								icon={"check-circle"}
-								iconColor="green"
-								size={35}
-								onPress={handleLogout}
-							/>
-							<IconButton
-								icon={"close-circle"}
-								iconColor="red"
-								size={35}
-								onPress={hideModal}
-							/>
-						</View>
-					</View>
-				</Modal>
-			</Portal>
-			<View>
-				<View style={styles.center}>
+		<View style={styles.container}>
+			<View style={styles.main}>
+				<View style={styles.wrapper}>
 					<Text
 						style={{
-							color: "#000000",
+							color: "#fff",
 							marginVertical: 5,
 							fontSize: 18,
 							fontWeight: "600",
@@ -246,92 +189,108 @@ const Activity = ({ navigation }) => {
 					>
 						Donations Assigned
 					</Text>
-					<ScrollView
-						style={{ height: Sizes.height - 300 }}
-						showsVerticalScrollIndicator={false}
+					<View
+						style={{
+							height: "90%",
+						}}
 					>
-						<View>
-							{Object.keys(donations).length != 0 ? (
-								donations.map((val) => (
-									<AssignedCard
-										data={val}
-										key={val.key}
-										handleDeny={handleDeny}
-										handleStart={handleStart}
-										completeDonation={completeDonation}
-										denyloading={denyloading}
-									/>
-								))
-							) : (
-								<View
-									style={{
-										paddingTop: 200,
-										display: "flex",
-										flexDirection: "row",
-										alignItems: "center",
-									}}
-								>
-									<Text>No Donations Assigned Yet </Text>
-									<Text>
-										<IconButton icon={"charity"} />{" "}
-									</Text>
-								</View>
-							)}
-							{loading ? (
-								<ActivityIndicator
-									style={{ paddingTop: 50 }}
-									size={50}
-									animating={loading}
-									color={colors.primary}
-								/>
-							) : (
-								nextBtn && (
+						<ScrollView
+							showsVerticalScrollIndicator={false}
+						>
+							<View
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								{Object.keys(donations).length == 0 ? (
+									donations.map((val) => (
+										<AssignedCard
+											data={val}
+											key={val.key}
+											handleDeny={handleDeny}
+											handleStart={handleStart}
+											completeDonation={completeDonation}
+											denyloading={denyloading}
+										/>
+									))
+								) : (
 									<View
 										style={{
+											paddingTop: 200,
 											display: "flex",
 											flexDirection: "row",
 											alignItems: "center",
-											justifyContent: "center",
 										}}
 									>
-										<IconButton
-											mode="contained"
-											icon={"chevron-down-circle"}
-											containerColor={colors.primary}
-											iconColor="white"
-											onPress={() =>
-												showNext({
-													item: donations[
-														donations.length - 1
-													],
-												})
-											}
-										/>
+										<Text style={{ color: colors.primary }}>
+											No Donations Assigned Yet{" "}
+										</Text>
+										<Text>
+											<IconButton icon={"charity"} />{" "}
+										</Text>
 									</View>
-								)
-							)}
-						</View>
-					</ScrollView>
+								)}
+								{loading ? (
+									<ActivityIndicator
+										style={{ paddingTop: 50 }}
+										size={50}
+										animating={loading}
+										color={colors.primary}
+									/>
+								) : (
+									nextBtn && (
+										<View
+											style={{
+												display: "flex",
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "center",
+											}}
+										>
+											<IconButton
+												mode="contained"
+												icon={"chevron-down-circle"}
+												containerColor={colors.primary}
+												iconColor="white"
+												onPress={() =>
+													showNext({
+														item: donations[
+															donations.length - 1
+														],
+													})
+												}
+											/>
+										</View>
+									)
+								)}
+							</View>
+						</ScrollView>
+					</View>
 				</View>
 			</View>
-			<Footer />
+			<View style={styles.footer}>
+				<RiderFooter />
+			</View>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	top: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: `${colors.primary}`,
-		paddingVertical: 10,
-		marginVertical: 10,
-		width: Sizes.width - 20,
+	container: {
+		flex: 1,
+		backgroundColor: "#000",
 	},
-	center: {
-		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
+	wrapper: {
+		width: Sizes.width - 20,
+		alignSelf: "center",
+		marginTop: 20,
+	},
+	main: {
+		height: Sizes.height * 0.8,
+	},
+	footer: {
+		height: Sizes.height * 0.2,
 	},
 });
 

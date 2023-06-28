@@ -14,12 +14,13 @@ const Login = ({ navigation, route }) => {
 				flex: 1,
 				justifyContent: "center",
 				alignItems: "center",
+				backgroundColor: "#000",
 			}}
 		>
 			{categ == "donor" ? (
 				<>
 					<Avatar.Image
-						size={150}
+						size={120}
 						source={require("../assets/donorLogo.jpg")}
 						style={{ marginTop: 30 }}
 					/>
@@ -39,7 +40,7 @@ const Login = ({ navigation, route }) => {
 				<>
 					<Avatar.Image
 						size={120}
-						source={require("../assets/org.jpeg")}
+						source={require("../assets/org.jpg")}
 						style={{ marginTop: 30 }}
 					/>
 					<Text

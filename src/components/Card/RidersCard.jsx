@@ -12,12 +12,14 @@ import { useNavigation } from "@react-navigation/native";
 const RidersCard = ({ data, handleDelete }) => {
 	const navigation = useNavigation();
 	return (
-		<View style={{ marginVertical: 5 }}>
+		<View style={{ marginBottom: 20 }}>
 			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
 			<Card style={styles.card}>
 				<Card.Title
 					title={data.name}
 					subtitle={"0" + data.phone}
+					titleStyle={{ color: "#fff" }}
+					subtitleStyle={{ color: "#fff" }}
 					left={() => {
 						return (
 							<Avatar.Image
@@ -44,9 +46,9 @@ const RidersCard = ({ data, handleDelete }) => {
 								<IconButton
 									icon={"pencil"}
 									mode="contained"
-									iconColor="blue"
+									iconColor="white"
 									size={20}
-									containerColor="transparent"
+									containerColor="lightgray"
 									onPress={() =>
 										navigation.navigate("EditRider", {
 											riderId: data.riderId,
@@ -56,8 +58,8 @@ const RidersCard = ({ data, handleDelete }) => {
 								<IconButton
 									icon={"delete"}
 									mode="contained"
-									iconColor="red"
-									containerColor="transparent"
+									iconColor="white"
+									containerColor="red"
 									size={20}
 									onPress={() => handleDelete(data.riderId)}
 								/>
@@ -77,5 +79,7 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		width: Sizes.width - 25,
 		padding: 2,
+		backgroundColor: colors.primary,
+		marginVertical: 10,
 	},
 });

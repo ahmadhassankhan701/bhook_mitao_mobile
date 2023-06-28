@@ -9,13 +9,9 @@ import {
 import React from "react";
 import InputText from "../components/Input/InputText";
 import { useState } from "react";
-import {
-	Avatar,
-	Button,
-	IconButton,
-} from "react-native-paper";
+import { Avatar, Button } from "react-native-paper";
 import { Sizes, colors } from "../utils/theme";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../src/context/AuthContext";
@@ -33,7 +29,7 @@ import { useEffect } from "react";
 WebBrowser.maybeCompleteAuthSession();
 
 const DonorRegister = ({ navigation }) => {
-	const { state, setState } = useContext(AuthContext);
+	const { setState } = useContext(AuthContext);
 	const [request, response, promptAsync] =
 		Google.useAuthRequest({
 			expoClientId:
@@ -206,10 +202,11 @@ const DonorRegister = ({ navigation }) => {
 				flex: 1,
 				justifyContent: "center",
 				alignItems: "center",
+				backgroundColor: "#000",
 			}}
 		>
 			<Avatar.Image
-				size={150}
+				size={120}
 				source={require("../assets/donorLogo.jpg")}
 				style={{ marginTop: 30 }}
 			/>
@@ -221,7 +218,7 @@ const DonorRegister = ({ navigation }) => {
 					fontWeight: "600",
 				}}
 			>
-				Register
+				Donor Register
 			</Text>
 			<KeyboardAvoidingView
 				style={{ flex: 1 }}
@@ -297,6 +294,7 @@ const DonorRegister = ({ navigation }) => {
 									marginVertical: 10,
 									backgroundColor: colors.primary,
 									color: "white",
+									borderRadius: 10,
 								}}
 								loading={loading}
 							>
@@ -312,7 +310,9 @@ const DonorRegister = ({ navigation }) => {
 								marginHorizontal: 10,
 							}}
 						>
-							<Text>Already a member?</Text>
+							<Text style={{ color: "white" }}>
+								Already a member?
+							</Text>
 							<TouchableOpacity
 								onPress={() =>
 									navigation.navigate("login", {
@@ -323,7 +323,7 @@ const DonorRegister = ({ navigation }) => {
 								<Text
 									style={{
 										paddingHorizontal: 5,
-										color: "#4285f4",
+										color: "lightgray",
 									}}
 								>
 									Sign In
@@ -339,7 +339,7 @@ const DonorRegister = ({ navigation }) => {
 						>
 							<View
 								style={{
-									width: 120,
+									width: 130,
 									height: 1,
 									backgroundColor: "gray",
 								}}
@@ -347,10 +347,10 @@ const DonorRegister = ({ navigation }) => {
 							<View>
 								<Text
 									style={{
-										width: 70,
+										width: 50,
 										textAlign: "center",
 										backgroundColor: `${colors.primary}`,
-										borderRadius: 100,
+										borderRadius: 10,
 										padding: 15,
 										color: "white",
 									}}
@@ -360,28 +360,26 @@ const DonorRegister = ({ navigation }) => {
 							</View>
 							<View
 								style={{
-									width: 100,
+									width: 130,
 									height: 1,
 									backgroundColor: "gray",
 								}}
 							/>
 						</View>
 						<View>
-							<TouchableOpacity
+							<Button
+								mode="outlined"
+								textColor={"lightgray"}
+								style={{
+									borderColor: "lightgray",
+									marginVertical: 10,
+								}}
+								icon={"google"}
 								onPress={() => promptAsync()}
 								disabled={!request}
-								style={styles.google_btn}
 							>
-								<View style={styles.google_icon_wrapper}>
-									<Image
-										style={styles.google_icon}
-										source={require("../assets/googleLogin.png")}
-									/>
-								</View>
-								<Text style={styles.btn_text}>
-									Sign up with google
-								</Text>
-							</TouchableOpacity>
+								Sign in with google
+							</Button>
 						</View>
 					</View>
 				</ScrollView>

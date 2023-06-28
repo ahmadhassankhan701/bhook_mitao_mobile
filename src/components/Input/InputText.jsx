@@ -34,7 +34,7 @@ const InputText = ({
 			outlineColor="transparent"
 			activeOutlineColor={colors.primary}
 			selectionColor={colors.desc}
-			theme={{ roundness: 30 }}
+			theme={{ roundness: 10 }}
 			onChangeText={(text) => handleChange(name, text)}
 			secureTextEntry={
 				(title == "Password *" ||

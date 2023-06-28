@@ -9,24 +9,25 @@ import {
 import { Sizes, colors } from "../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const EventsCard = ({ data, handleDelete }) => {
+	const { state } = useContext(AuthContext);
 	const navigation = useNavigation();
 	return (
-		<View style={{ marginVertical: 5 }}>
+		<View style={{ marginBottom: 20 }}>
 			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
 			<Card style={styles.card}>
 				<Card.Title
+					style={{ color: "white" }}
 					title={data.title}
 					left={() => {
 						return (
 							<Avatar.Image
 								size={50}
 								source={{
-									uri:
-										data.image == ""
-											? `https://via.placeholder.com/200x200.png/ec851f/FFFFFF?text=${data.name[0]}`
-											: data.image,
+									uri: `https://via.placeholder.com/200x200.png/000/fff?text=${state.user.name[0]}`,
 								}}
 							/>
 						);
@@ -44,9 +45,9 @@ const EventsCard = ({ data, handleDelete }) => {
 								<IconButton
 									icon={"pencil"}
 									mode="contained"
-									iconColor="blue"
+									iconColor="white"
 									size={20}
-									containerColor="transparent"
+									containerColor="lightgray"
 									onPress={() =>
 										navigation.navigate("EditEvents", {
 											orgId: data.orgId,
@@ -57,8 +58,8 @@ const EventsCard = ({ data, handleDelete }) => {
 								<IconButton
 									icon={"delete"}
 									mode="contained"
-									iconColor="red"
-									containerColor="transparent"
+									iconColor="white"
+									containerColor="red"
 									size={20}
 									onPress={() =>
 										handleDelete(
@@ -71,12 +72,15 @@ const EventsCard = ({ data, handleDelete }) => {
 							</View>
 						);
 					}}
+					titleStyle={{ color: "#fff" }}
 				/>
 				<Card.Content>
-					<Text>{data.description}</Text>
+					<Text style={{ color: "white" }}>
+						{data.description}
+					</Text>
 					<Image
 						source={{ uri: data.image }}
-						width={330}
+						width={300}
 						height={100}
 						alt="event"
 						style={{ marginVertical: 10 }}
@@ -94,5 +98,8 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		width: Sizes.width - 25,
 		padding: 2,
+		backgroundColor: colors.primary,
+		color: "white",
+		marginVertical: 10,
 	},
 });
