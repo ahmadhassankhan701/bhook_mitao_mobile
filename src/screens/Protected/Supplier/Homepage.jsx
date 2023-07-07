@@ -169,7 +169,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Completed</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>7</Text>
 							</Card.Content>
 						</Card>
 						<Card
@@ -181,7 +181,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Accepted</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>10</Text>
 							</Card.Content>
 						</Card>
 						<Card
@@ -193,7 +193,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Rejected</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>3</Text>
 							</Card.Content>
 						</Card>
 					</View>

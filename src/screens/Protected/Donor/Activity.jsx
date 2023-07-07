@@ -30,11 +30,22 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import DonorFooter from "../../../components/Footer/DonorFooter";
 import DonorActivity from "../../../components/Card/DonorActivity";
+import { sendNotification } from "../../../utils/Helpers/NotifyConfig";
+import Failure from "../../../components/Modal/Failure";
+import Success from "../../../components/Modal/Success";
 const Activity = ({ navigation }) => {
 	const { state } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [deleteSuccessAlert, setDeleteSuccessAlert] =
+		useState(false);
+	const [completeSuccessAlert, setCompleteSuccessAlert] =
+		useState(false);
+	const [deleteFailAlert, setDeleteFailAlert] =
+		useState(false);
+	const [completeFailAlert, setCompleteFailAlert] =
+		useState(false);
 	const [completeLoading, setCompleteLoading] =
 		useState(false);
 	const userId =
@@ -112,7 +123,7 @@ const Activity = ({ navigation }) => {
 		};
 		fetchNextData();
 	};
-	const handleDelete = async (uid, docId) => {
+	const handleDelete = async (uid, docId, orgToken) => {
 		try {
 			const donationsRef = doc(
 				db,
@@ -120,16 +131,27 @@ const Activity = ({ navigation }) => {
 				`${docId}`
 			);
 			await deleteDoc(donationsRef);
-			alert("Donation deleted successfully");
+			await sendNotification(
+				orgToken,
+				"Food Donation Request Cancelled",
+				"Unfortunately, user has cancelled the donation!"
+			);
+			setDeleteSuccessAlert(true);
 		} catch (error) {
-			alert("Deletion failed");
+			setDeleteFailAlert(true);
 			console.log(error);
 		}
 	};
-	const completeDonation = async (uid, docId) => {
+	const completeDonation = async (
+		uid,
+		docId,
+		orgToken,
+		riderToken
+	) => {
 		try {
 			setCompleteLoading(true);
-			const done = { donor: true, rider: true, org: false };
+			const done = { donor: true, rider: false };
+			const status = "pending";
 			const donationsRef = doc(
 				db,
 				`Donations/${uid}/food`,
@@ -137,19 +159,54 @@ const Activity = ({ navigation }) => {
 			);
 			const request = {
 				done,
+				status,
 			};
 			await updateDoc(donationsRef, request);
-			setCompleteLoading(false);
-			alert(
-				"Thanks. Please wait for Organization to confirm Completion"
+			await sendNotification(
+				orgToken,
+				"Donor Approved",
+				"Congratulations. Donor has approved for completion. Waiting for Rider!"
 			);
+			await sendNotification(
+				riderToken,
+				"Donor Approved",
+				"Congratulations. Donor has approved for completion. Waiting for Rider!"
+			);
+			setCompleteLoading(false);
+			setCompleteSuccessAlert(true);
 		} catch (error) {
-			alert("Error completing donation");
+			setCompleteFailAlert(true);
 			console.log(error);
 		}
 	};
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={deleteSuccessAlert}
+				setVisible={setDeleteSuccessAlert}
+				title={"Donation Request Cancelled"}
+				icon={"delete-circle"}
+			/>
+			<Failure
+				visible={deleteFailAlert}
+				setVisible={setDeleteFailAlert}
+				title={"Cancellation Failed"}
+				icon={"delete-circle"}
+			/>
+			<Failure
+				visible={completeFailAlert}
+				setVisible={setCompleteFailAlert}
+				title={"Completion Failed"}
+				icon={"alert-circle"}
+			/>
+			<Success
+				visible={completeSuccessAlert}
+				setVisible={setCompleteSuccessAlert}
+				title={
+					"Congratulations. Please wait for rider to confirm Completion"
+				}
+				icon={"check-circle"}
+			/>
 			<View style={styles.main}>
 				<View style={styles.wrapper}>
 					<Text

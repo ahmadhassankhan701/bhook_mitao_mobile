@@ -2,7 +2,6 @@ import React from "react";
 import {
 	StyleSheet,
 	View,
-	Text,
 	KeyboardAvoidingView,
 } from "react-native";
 import InputText from "../Input/InputText";
@@ -13,6 +12,7 @@ import {
 } from "react-native-paper";
 import { colors } from "../../utils/theme";
 import { ScrollView } from "react-native";
+import Confirm from "../Modal/Confirm";
 
 const EventForm = ({
 	detail,
@@ -23,6 +23,11 @@ const EventForm = ({
 	uploadedImage,
 	mode,
 }) => {
+	const [visible, setVisible] = useState(true);
+	const handleSubmitEvent = async () => {
+		setVisible(false);
+		handleSubmit();
+	};
 	return (
 		<View
 			style={{
@@ -31,6 +36,14 @@ const EventForm = ({
 				alignItems: "center",
 			}}
 		>
+			<Confirm
+				visible={visible}
+				setVisible={setVisible}
+				title={"Are you sure?"}
+				subtitle={"Sure! You have reviewed the details"}
+				icon={"alert"}
+				handleAction={handleSubmitEvent}
+			/>
 			<Avatar.Image
 				size={120}
 				source={

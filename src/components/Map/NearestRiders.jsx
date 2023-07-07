@@ -38,7 +38,8 @@ const NearestRiders = ({
 		riderLng,
 		riderName,
 		riderPhone,
-		riderId
+		riderId,
+		push_token
 	) => {
 		var dis = getDistance(
 			{ latitude: riderLat, longitude: riderLng },
@@ -47,20 +48,17 @@ const NearestRiders = ({
 				longitude: donorloc.currentLocation.lng,
 			}
 		);
-		// alert(`Distance\n\n${dis} Meter\nOR\n${dis / 1000} KM`);
 		const info = {
 			distance: dis / 1000,
 			time: dis / 40000,
 			riderName,
 			riderPhone,
 			riderId,
+			push_token,
 		};
 		setSelected(info);
 		setVisible(true);
 	};
-	// const handleAssign = async () => {
-	// 	alert("Assigned");
-	// };
 	return (
 		<View style={styles.mapContainer}>
 			<Portal>
@@ -99,7 +97,8 @@ const NearestRiders = ({
 									handleAssign(
 										selected.riderId,
 										selected.riderName,
-										selected.riderPhone
+										selected.riderPhone,
+										selected.push_token
 									)
 								}
 								loading={loading}
@@ -160,7 +159,8 @@ const NearestRiders = ({
 								riderloc.location.currentLocation.lng,
 								riderloc.name,
 								riderloc.phone,
-								riderloc.riderId
+								riderloc.riderId,
+								riderloc.push_token
 							)
 						}
 					>

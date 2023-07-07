@@ -2,10 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import {
 	Avatar,
+	Button,
 	Card,
 	IconButton,
 } from "react-native-paper";
-import { Sizes } from "../../utils/theme";
+import { Sizes, colors } from "../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
 
 const AssignedCard = ({
@@ -19,7 +20,7 @@ const AssignedCard = ({
 	return (
 		<View style={{ marginVertical: 5 }}>
 			{/* <Text>{JSON.stringify(data, null, 4)}</Text> */}
-			{/* <Card style={styles.card}>
+			<Card style={styles.card}>
 				<Card.Title
 					title={data.detail.name}
 					subtitle={"Donor Phone: 0" + data.detail.phone}
@@ -58,21 +59,24 @@ const AssignedCard = ({
 						alignItems: "center",
 					}}
 				>
-					{data.status == "started" ? (
+					{data.status == "pending" && (
 						<>
-							<IconButton
-								icon={"check-circle"}
-								iconColor="white"
+							<Button
 								mode="contained"
-								containerColor={"green"}
-								size={18}
+								buttonColor="green"
+								textColor="white"
 								onPress={() =>
-									completeDonation(data.key, data.userId)
+									completeDonation(
+										data.key,
+										data.userId,
+										data.selectedOrg.push_token,
+										data.push_token
+									)
 								}
-							/>
-						</>
-					) : data.status == "pending" ? (
-						<>
+								icon={"check-circle"}
+							>
+								Confirm
+							</Button>
 							{data.done.donor && (
 								<IconButton
 									icon={"account"}
@@ -82,17 +86,9 @@ const AssignedCard = ({
 									size={18}
 								/>
 							)}
-							{data.done.rider && (
-								<IconButton
-									icon={"racing-helmet"}
-									iconColor="white"
-									mode="contained"
-									containerColor={"green"}
-									size={18}
-								/>
-							)}
 						</>
-					) : (
+					)}
+					{data.status == "assigned" && (
 						<>
 							<IconButton
 								icon={"check-circle"}
@@ -101,7 +97,12 @@ const AssignedCard = ({
 								containerColor={"green"}
 								size={18}
 								onPress={() =>
-									handleStart(data.key, data.userId)
+									handleStart(
+										data.key,
+										data.userId,
+										data.selectedOrg.push_token,
+										data.push_token
+									)
 								}
 							/>
 							<IconButton
@@ -114,7 +115,11 @@ const AssignedCard = ({
 								size={18}
 								disabled={denyloading}
 								onPress={() =>
-									handleDeny(data.key, data.userId)
+									handleDeny(
+										data.key,
+										data.userId,
+										data.selectedOrg.push_token
+									)
 								}
 							/>
 						</>
@@ -133,150 +138,6 @@ const AssignedCard = ({
 						}
 					/>
 				</Card.Actions>
-			</Card> */}
-			<Card style={styles.card}>
-				<Card.Title
-					title={"data.detail.name"}
-					subtitle={"Donor Phone: 0" + "data.detail.phone"}
-					left={() => {
-						return (
-							<Avatar.Text
-								size={50}
-								label={"data.detail.name[0]"}
-							/>
-						);
-					}}
-					right={() => {
-						return (
-							<Text style={{ paddingHorizontal: 10 }}>
-								{"data.status"}
-							</Text>
-						);
-					}}
-				/>
-				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text variant="titleLarge">
-						For Persons: {"data.detail.quantity"}
-					</Text>
-					<Text variant="bodyMedium">
-						Desc: {"data.detail.desc"}
-					</Text>
-					<Text variant="bodyMedium">
-						Address: {"data.location.address"}
-					</Text>
-				</Card.Content>
-				<Card.Actions
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "space-around",
-						alignItems: "center",
-					}}
-				>
-					<IconButton
-						icon={"account"}
-						iconColor="white"
-						mode="contained"
-						containerColor={"green"}
-						size={18}
-					/>
-				</Card.Actions>
-			</Card>
-			<Card style={styles.card}>
-				<Card.Title
-					title={"data.detail.name"}
-					subtitle={"Donor Phone: 0" + "data.detail.phone"}
-					left={() => {
-						return (
-							<Avatar.Text
-								size={50}
-								label={"data.detail.name[0]"}
-							/>
-						);
-					}}
-					right={() => {
-						return (
-							<Text style={{ paddingHorizontal: 10 }}>
-								{"data.status"}
-							</Text>
-						);
-					}}
-				/>
-				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text variant="titleLarge">
-						For Persons: {"data.detail.quantity"}
-					</Text>
-					<Text variant="bodyMedium">
-						Desc: {"data.detail.desc"}
-					</Text>
-					<Text variant="bodyMedium">
-						Address: {"data.location.address"}
-					</Text>
-				</Card.Content>
-				<Card.Actions
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "space-around",
-						alignItems: "center",
-					}}
-				>
-					<IconButton
-						icon={"account"}
-						iconColor="white"
-						mode="contained"
-						containerColor={"green"}
-						size={18}
-					/>
-				</Card.Actions>
-			</Card>
-			<Card style={styles.card}>
-				<Card.Title
-					title={"data.detail.name"}
-					subtitle={"Donor Phone: 0" + "data.detail.phone"}
-					left={() => {
-						return (
-							<Avatar.Text
-								size={50}
-								label={"data.detail.name[0]"}
-							/>
-						);
-					}}
-					right={() => {
-						return (
-							<Text style={{ paddingHorizontal: 10 }}>
-								{"data.status"}
-							</Text>
-						);
-					}}
-				/>
-				<Card.Content style={{ paddingHorizontal: 25 }}>
-					<Text variant="titleLarge">
-						For Persons: {"data.detail.quantity"}
-					</Text>
-					<Text variant="bodyMedium">
-						Desc: {"data.detail.desc"}
-					</Text>
-					<Text variant="bodyMedium">
-						Address: {"data.location.address"}
-					</Text>
-				</Card.Content>
-				<Card.Actions
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "space-around",
-						alignItems: "center",
-					}}
-				>
-					<IconButton
-						icon={"account"}
-						iconColor="white"
-						mode="contained"
-						containerColor={"green"}
-						size={18}
-					/>
-				</Card.Actions>
 			</Card>
 		</View>
 	);
@@ -289,5 +150,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		width: Sizes.width - 25,
 		padding: 2,
+		backgroundColor: colors.primary,
 	},
 });

@@ -16,17 +16,21 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { Sizes, colors } from "../../utils/theme";
 import { Button } from "react-native-paper";
+import Success from "../Modal/Success";
+import Failure from "../Modal/Failure";
 //ADD localhost address of your server
-const API_URL =
-	"http://127.0.0.1:5001/bhook-mita/us-central1/api";
 // const API_URL =
-// 	"https://us-central1-bhook-mita.cloudfunctions.net/api";
+// 	"http://127.0.0.1:5001/bhook-mita/us-central1/api";
+const API_URL =
+	"https://us-central1-bhook-mita.cloudfunctions.net/api";
 
 const StripeApp = (props) => {
 	const { state } = useContext(AuthContext);
 	const navigation = useNavigation();
 	const [email, setEmail] = useState();
 	const [amount, setAmount] = useState();
+	const [successAlert, setSuccessAlert] = useState(false);
+	const [failureAlert, setFailureAlert] = useState(false);
 	const [cardDetails, setCardDetails] = useState();
 	const { confirmPayment, loading } = useConfirmPayment();
 	const userId = state && state.user && state.user.userId;
@@ -42,6 +46,7 @@ const StripeApp = (props) => {
 					headers: {
 						"Content-Type": "application/json",
 					},
+					body: JSON.stringify({ amount }),
 				}
 			);
 			const { clientSecret, error } = await response.json();
@@ -59,9 +64,6 @@ const StripeApp = (props) => {
 			);
 			return;
 		}
-		const billingDetails = {
-			email: email,
-		};
 		// 2.Fetch the intent client secret from the backend
 		try {
 			const { clientSecret, error } =
@@ -71,32 +73,18 @@ const StripeApp = (props) => {
 				// console.log("Unable to process payment");
 				alert(error);
 			} else {
-				const { paymentIntent, error } =
-					await confirmPayment(clientSecret, {
-						type: "Card",
-						billingDetails: billingDetails,
-					});
-				if (error) {
-					alert(
-						`Payment Confirmation Error ${error.message}`
-					);
-				} else if (paymentIntent) {
-					alert("Payment Successful");
-					console.log("Payment successful ", paymentIntent);
-					saveMoneyDonation(paymentIntent);
-				}
+				saveMoneyDonation(clientSecret);
 			}
 		} catch (e) {
 			console.log(e);
 		}
-		// 3.Confirm the payment with the card details
 	};
-	const saveMoneyDonation = async (paymentIntent) => {
+	const saveMoneyDonation = async (cSecret) => {
 		try {
 			const donationsRef = collection(db, "Donations");
 			const request = {
 				amount,
-				client_secret: "123456",
+				client_secret: cSecret,
 				currency: "usd",
 				receipt_email: email,
 				status: "paid",
@@ -109,8 +97,9 @@ const StripeApp = (props) => {
 				collection(donationsRef, `${userId}`, "money"),
 				request
 			);
-			alert("Congrats! You just made a money donation");
-			navigation.navigate("Activity");
+			setSuccessAlert(true);
+			alert("Donation done successfully");
+			navigation.navigate("Homepage");
 		} catch (error) {
 			console.log(error);
 		}
@@ -118,6 +107,18 @@ const StripeApp = (props) => {
 
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={failureAlert}
+				setVisible={setFailureAlert}
+				title={"Donation Failed"}
+				icon={"exclamation-thick"}
+			/>
+			<Success
+				visible={successAlert}
+				setVisible={setSuccessAlert}
+				title={"Congratulations! You just made a donation"}
+				icon={"check-circle"}
+			/>
 			<View style={styles.wrapper}>
 				<TextInput
 					autoCapitalize="none"

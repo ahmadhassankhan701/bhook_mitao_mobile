@@ -19,7 +19,7 @@ import RiderFooter from "../../../components/Footer";
 import * as Location from "expo-location";
 
 const Homepage = ({ navigation }) => {
-	const { state } = useContext(AuthContext);
+	const { state, setState } = useContext(AuthContext);
 	const [donations, setDonations] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const userId =
@@ -212,7 +212,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Completed</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>8</Text>
 							</Card.Content>
 						</Card>
 						<Card
@@ -224,7 +224,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Accepted</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>10</Text>
 							</Card.Content>
 						</Card>
 						<Card
@@ -236,7 +236,7 @@ const Homepage = ({ navigation }) => {
 						>
 							<Card.Content style={styles.CardContent}>
 								<Text style={styles.title}>Rejected</Text>
-								<Text style={styles.value}>0</Text>
+								<Text style={styles.value}>2</Text>
 							</Card.Content>
 						</Card>
 					</View>

@@ -18,6 +18,8 @@ import {
 	ref,
 	uploadBytes,
 } from "firebase/storage";
+import Failure from "../../../components/Modal/Failure";
+import Success from "../../../components/Modal/Success";
 const AddRider = ({ navigation }) => {
 	const { state } = useContext(AuthContext);
 	const [detail, setDetail] = useState({
@@ -34,6 +36,8 @@ const AddRider = ({ navigation }) => {
 	});
 	const [uploadedImage, setUploadedImage] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
+	const [successAlert, setSuccessAlert] = useState(false);
+	const [failAlert, setFailAlert] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const userId = state && state.user && state.user.userId;
 	const handleChange = async (name, val) => {
@@ -139,10 +143,10 @@ const AddRider = ({ navigation }) => {
 			const riderRef = doc(db, "Riders", detail.id);
 			await setDoc(riderRef, rider);
 			setLoading(false);
-			alert("Rider Added Successfully");
+			setSuccessAlert(true);
 			navigation.navigate("Riders");
 		} catch (error) {
-			alert(error.message);
+			setFailAlert(true);
 			console.log(error);
 		}
 	};
@@ -191,6 +195,18 @@ const AddRider = ({ navigation }) => {
 	};
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={failAlert}
+				setVisible={setFailAlert}
+				title={"Rider could not be added"}
+				icon={"exclamation-thick"}
+			/>
+			<Success
+				visible={successAlert}
+				setVisible={setSuccessAlert}
+				title={"Rider added successfully!"}
+				icon={"check-circle"}
+			/>
 			<RiderForm
 				detail={detail}
 				error={error}

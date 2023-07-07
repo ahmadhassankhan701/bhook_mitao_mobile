@@ -24,6 +24,9 @@ import haversineDistance from "haversine-distance";
 import { db } from "../../../../firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import { sendNotification } from "../../../utils/Helpers/NotifyConfig";
+import Confirm from "../../../components/Modal/Confirm";
+import Failure from "../../../components/Modal/Failure";
+import Success from "../../../components/Modal/Success";
 const FoodFinalOrg = ({ navigation, route }) => {
 	const { state } = useContext(AuthContext);
 	const { detail, identity, location } = route.params;
@@ -31,6 +34,9 @@ const FoodFinalOrg = ({ navigation, route }) => {
 	const [orgs, setOrgs] = useState(null);
 	const [selectedOrg, setSelectedOrg] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [successAlert, setSuccessAlert] = useState(false);
+	const [failureAlert, setFailureAlert] = useState(true);
+	const [visible, setVisible] = useState(false);
 	const [submitLoading, setSubmitLoading] = useState(false);
 	const push_token =
 		state && state.user && state.user.push_token;
@@ -91,6 +97,10 @@ const FoodFinalOrg = ({ navigation, route }) => {
 			setLoading(false);
 		}
 	};
+	const handleDonationRequest = async () => {
+		setVisible(false);
+		handleSubmit();
+	};
 	const handleSubmit = async () => {
 		if (selectedOrg == null) {
 			alert("Please select the organization to proceed!");
@@ -114,22 +124,44 @@ const FoodFinalOrg = ({ navigation, route }) => {
 				data
 			);
 			setSubmitLoading(false);
-			alert(
-				"Thanks for Donation Request. Once approved by Organization, you will be notified!"
-			);
 			await sendNotification(
 				selectedOrg.push_token,
 				"Food Donation Request",
 				"You have new food donation request. Please have a look and take action!"
 			);
+			setSuccessAlert(true);
 			navigation.navigate("Homepage");
 		} catch (error) {
-			alert("Something went wrong");
+			setFailureAlert(true);
 			console.log(error);
 		}
 	};
 	return (
 		<View style={styles.container}>
+			<Confirm
+				visible={visible}
+				setVisible={setVisible}
+				title={"Are you sure?"}
+				subtitle={
+					"You won't be able to edit details later!"
+				}
+				icon={"alert"}
+				handleAction={handleDonationRequest}
+			/>
+			<Failure
+				visible={failureAlert}
+				setVisible={setFailureAlert}
+				title={"Donation Request Failed"}
+				icon={"exclamation-thick"}
+			/>
+			<Success
+				visible={successAlert}
+				setVisible={setSuccessAlert}
+				title={
+					"Thanks for Donation Request. Once approved by Organization, you will be notified!"
+				}
+				icon={"check-circle"}
+			/>
 			<View style={styles.main}>
 				<View>
 					<Text
@@ -228,7 +260,7 @@ const FoodFinalOrg = ({ navigation, route }) => {
 						icon={"charity"}
 						mode="contained"
 						buttonColor={colors.primary}
-						onPress={handleSubmit}
+						onPress={() => setVisible(true)}
 						style={{
 							borderRadius: 10,
 						}}

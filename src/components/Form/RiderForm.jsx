@@ -13,6 +13,7 @@ import {
 } from "react-native-paper";
 import { colors } from "../../utils/theme";
 import { ScrollView } from "react-native";
+import Confirm from "../Modal/Confirm";
 
 const RiderForm = ({
 	detail,
@@ -26,6 +27,11 @@ const RiderForm = ({
 	uploadedImage,
 	mode,
 }) => {
+	const [visible, setVisible] = useState(true);
+	const handleSubmitRider = async () => {
+		setVisible(false);
+		handleSubmit();
+	};
 	return (
 		<View
 			style={{
@@ -34,6 +40,14 @@ const RiderForm = ({
 				alignItems: "center",
 			}}
 		>
+			<Confirm
+				visible={visible}
+				setVisible={setVisible}
+				title={"Are you sure?"}
+				subtitle={"Sure! You have reviewed the details"}
+				icon={"alert"}
+				handleAction={handleSubmitRider}
+			/>
 			<Avatar.Image
 				size={120}
 				source={

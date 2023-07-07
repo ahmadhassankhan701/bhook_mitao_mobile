@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import NearestRiders from "../../../components/Map/NearestRiders";
+import { sendNotification } from "../../../utils/Helpers/NotifyConfig";
 
 const FindRiders = ({ navigation, route }) => {
 	const { state } = useContext(AuthContext);
@@ -70,7 +71,8 @@ const FindRiders = ({ navigation, route }) => {
 	const handleAssign = async (
 		riderId,
 		riderName,
-		riderPhone
+		riderPhone,
+		push_token
 	) => {
 		try {
 			setLoading(true);
@@ -80,21 +82,24 @@ const FindRiders = ({ navigation, route }) => {
 				`Donations/${userId}/food`,
 				`${docId}`
 			);
-			const assignedTo = {
+			const selectedRider = {
 				name: riderName,
 				phone: riderPhone,
 				riderId,
+				push_token,
 			};
-			const assignedBy = { orgId, orgName };
 			const request = {
-				assignedTo: assignedTo,
-				assignedBy: assignedBy,
+				selectedRider: selectedRider,
 				status,
-				createdAt: serverTimestamp(),
 			};
 			await updateDoc(donationsRef, request);
-			alert("Assigned to rider");
+			await sendNotification(
+				push_token,
+				"Food Donation Request",
+				"Hi. You have got a new donation request. Respond Quickly!"
+			);
 			setLoading(false);
+			alert("Assigned to rider successfully!");
 			navigation.navigate("Requests");
 		} catch (error) {
 			alert("Something went wrong");

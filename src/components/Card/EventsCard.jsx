@@ -11,13 +11,28 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Confirm from "../Modal/Confirm";
+import { useState } from "react";
 
 const EventsCard = ({ data, handleDelete }) => {
 	const { state } = useContext(AuthContext);
+	const [visible, setVisible] = useState(false);
 	const navigation = useNavigation();
+	const handleDeleteModal = async () => {
+		setVisible(false);
+		handleDelete(data.orgId, data.key, data.filePath);
+	};
 	return (
 		<View style={{ marginBottom: 20 }}>
 			{/* <Text>{JSON.stringify(lastDoc, null, 4)}</Text> */}
+			<Confirm
+				visible={visible}
+				setVisible={setVisible}
+				title={"Are you sure?"}
+				subtitle={"This action cannot be undone"}
+				icon={"alert"}
+				handleAction={handleDeleteModal}
+			/>
 			<Card style={styles.card}>
 				<Card.Title
 					style={{ color: "white" }}
@@ -61,13 +76,7 @@ const EventsCard = ({ data, handleDelete }) => {
 									iconColor="white"
 									containerColor="red"
 									size={20}
-									onPress={() =>
-										handleDelete(
-											data.orgId,
-											data.key,
-											data.filePath
-										)
-									}
+									onPress={() => setVisible(true)}
 								/>
 							</View>
 						);

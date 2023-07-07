@@ -20,6 +20,8 @@ import {
 	uploadBytes,
 } from "firebase/storage";
 import EventForm from "../../../components/Form/EventForm";
+import Failure from "../../../components/Modal/Failure";
+import Success from "../../../components/Modal/Success";
 const AddEvents = ({ navigation }) => {
 	const { state } = useContext(AuthContext);
 	const [detail, setDetail] = useState({
@@ -29,6 +31,8 @@ const AddEvents = ({ navigation }) => {
 	});
 	const [uploadedImage, setUploadedImage] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [successAlert, setSuccessAlert] = useState(false);
+	const [failAlert, setFailAlert] = useState(false);
 	const userId = state && state.user && state.user.userId;
 	const handleChange = async (name, val) => {
 		setDetail({ ...detail, [name]: val });
@@ -58,10 +62,10 @@ const AddEvents = ({ navigation }) => {
 				{ ...event }
 			);
 			setLoading(false);
-			alert("Event Added Successfully");
+			setSuccessAlert(true);
 			navigation.navigate("Events");
 		} catch (error) {
-			alert(error.message);
+			setFailAlert(true);
 			console.log(error);
 		}
 	};
@@ -109,8 +113,21 @@ const AddEvents = ({ navigation }) => {
 		}
 		return null;
 	};
+
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={failAlert}
+				setVisible={setFailAlert}
+				title={"Event could not be added"}
+				icon={"exclamation-thick"}
+			/>
+			<Success
+				visible={successAlert}
+				setVisible={setSuccessAlert}
+				title={"Event added successfully!"}
+				icon={"check-circle"}
+			/>
 			<EventForm
 				detail={detail}
 				loading={loading}

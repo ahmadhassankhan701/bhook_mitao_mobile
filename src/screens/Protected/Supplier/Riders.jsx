@@ -28,11 +28,14 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
 import RidersCard from "../../../components/Card/RidersCard";
+import Failure from "../../../components/Modal/Failure";
 const Riders = ({ navigation }) => {
 	const { state } = useContext(AuthContext);
 	const [riders, setRiders] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [deleteSuccess, setDeleteSuccess] = useState(false);
+	const [deleteFail, setDeleteFail] = useState(false);
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
@@ -95,14 +98,26 @@ const Riders = ({ navigation }) => {
 	const handleDelete = async (id) => {
 		try {
 			await deleteDoc(doc(db, `Riders`, `${id}`));
-			alert("Rider Deleted");
+			setDeleteSuccess(true);
 		} catch (error) {
-			alert("Deletion Failed");
+			setDeleteFail(true);
 			console.log(error);
 		}
 	};
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={deleteFail}
+				setVisible={setDeleteFail}
+				title={"Deletion Failed"}
+				icon={"exclamation-thick"}
+			/>
+			<Failure
+				visible={deleteSuccess}
+				setVisible={setDeleteSuccess}
+				title={"Rider Deleted"}
+				icon={"delete-circle"}
+			/>
 			<View style={styles.main}>
 				<View style={styles.wrapper}>
 					<View

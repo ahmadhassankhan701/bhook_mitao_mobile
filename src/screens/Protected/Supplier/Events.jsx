@@ -29,11 +29,15 @@ import { AuthContext } from "../../../context/AuthContext";
 import SupplierFooter from "../../../components/Footer/SupplierFooter";
 import EventsCard from "../../../components/Card/EventsCard";
 import { deleteObject, ref } from "firebase/storage";
+import Failure from "../../../components/Modal/Failure";
+import Success from "../../../components/Modal/Success";
 const Events = ({ navigation }) => {
 	const { state } = useContext(AuthContext);
 	const [events, setEvents] = useState([]);
 	const [nextBtn, setNextBtn] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [deleteSuccess, setDeleteSuccess] = useState(false);
+	const [deleteFail, setDeleteFail] = useState(false);
 	const userId =
 		state && state.user ? state.user.userId : "";
 	useEffect(() => {
@@ -102,9 +106,9 @@ const Events = ({ navigation }) => {
 				`${docId}`
 			);
 			await deleteDoc(eventRef);
-			alert("Event Deleted");
+			setDeleteSuccess(true);
 		} catch (error) {
-			alert("Deletion Failed");
+			setDeleteFail(true);
 			console.log(error);
 		}
 	};
@@ -114,6 +118,18 @@ const Events = ({ navigation }) => {
 	};
 	return (
 		<View style={styles.container}>
+			<Failure
+				visible={deleteFail}
+				setVisible={setDeleteFail}
+				title={"Deletion Failed"}
+				icon={"exclamation-thick"}
+			/>
+			<Failure
+				visible={deleteSuccess}
+				setVisible={setDeleteSuccess}
+				title={"Event Deleted"}
+				icon={"delete-circle"}
+			/>
 			<View style={styles.main}>
 				<View style={styles.wrapper}>
 					<View

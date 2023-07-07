@@ -8,18 +8,54 @@ import {
 } from "react-native-paper";
 import { Sizes, colors } from "../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
-
+import { useState } from "react";
+import Confirm from "../Modal/Confirm";
 const DonorActivity = ({
 	data,
 	handleDelete,
-	loading,
 	completeDonation,
 	completeLoading,
 }) => {
 	const navigation = useNavigation();
+	const [deleteVisible, setDeleteVisible] = useState(false);
+	const [completeVisible, setCompleteVisible] =
+		useState(false);
+	const handleModalDelete = async () => {
+		setDeleteVisible(false);
+		handleDelete(
+			data.userId,
+			data.key,
+			data.selectedOrg.push_token
+		);
+	};
+	const handleModalComplete = async () => {
+		setCompleteVisible(false);
+		completeDonation(
+			data.userId,
+			data.key,
+			data.selectedOrg.push_token,
+			data.selectedRider.push_token
+		);
+	};
 	return (
 		<View style={{ marginVertical: 5 }}>
 			{/* <Text>{JSON.stringify(data, null, 4)}</Text> */}
+			<Confirm
+				visible={deleteVisible}
+				setVisible={setDeleteVisible}
+				title={"Are you sure?"}
+				subtitle={"This action cannot be undone"}
+				icon={"delete"}
+				handleAction={handleModalDelete}
+			/>
+			<Confirm
+				visible={completeVisible}
+				setVisible={setCompleteVisible}
+				title={"Are you sure?"}
+				subtitle={"This means confirmation from your side"}
+				icon={"alert"}
+				handleAction={handleModalComplete}
+			/>
 			<Card style={styles.card}>
 				<Card.Title
 					title={data.detail.name}
@@ -60,10 +96,10 @@ const DonorActivity = ({
 					{data.status == "started" && (
 						<>
 							<Text style={{ color: "#fff" }}>
-								Rider Name: {data.assignedTo.name}
+								Rider Name: {data.selectedRider.name}
 							</Text>
 							<Text style={{ color: "#fff" }}>
-								Rider Phone: 0{data.assignedTo.phone}
+								Rider Phone: 0{data.selectedRider.phone}
 							</Text>
 						</>
 					)}
@@ -77,61 +113,63 @@ const DonorActivity = ({
 								iconColor="white"
 								containerColor="red"
 								size={20}
-								onPress={() =>
-									handleDelete(data.userId, data.key)
-								}
+								onPress={() => setDeleteVisible(true)}
+							/>
+							<IconButton
+								icon={"delete"}
+								mode="contained"
+								iconColor="white"
+								containerColor="red"
+								size={20}
+								onPress={() => setDeleteVisible(true)}
 							/>
 						</>
 					) : data.status == "started" ? (
-						<IconButton
-							icon={"map-marker-radius"}
-							mode="contained"
-							iconColor="white"
-							containerColor={"blue"}
-							size={20}
-							onPress={() =>
-								navigation.navigate("TrackRider", {
-									riderId: data.assignedTo.riderId,
-									donorLat:
-										data.location.currentLocation.lat,
-									donorLng:
-										data.location.currentLocation.lng,
-								})
-							}
-						/>
+						<>
+							<Button
+								mode="contained"
+								buttonColor="green"
+								textColor="white"
+								onPress={() => setCompleteVisible(true)}
+								icon={"check-circle"}
+								loading={completeLoading}
+							>
+								Confirm
+							</Button>
+							<IconButton
+								icon={"map-marker-radius"}
+								mode="contained"
+								iconColor="white"
+								containerColor={"blue"}
+								size={20}
+								onPress={() =>
+									navigation.navigate("TrackRider", {
+										riderId: data.selectedRider.riderId,
+										donorLat:
+											data.location.currentLocation.lat,
+										donorLng:
+											data.location.currentLocation.lng,
+									})
+								}
+							/>
+						</>
 					) : data.status == "assigned" ? (
 						<Text style={{ color: "#ffffff" }}>
-							Waiting for rider
+							Rider Approval Pending
 						</Text>
 					) : (
 						<IconButton
-							icon={"racing-helmet"}
+							icon={"account-check"}
 							iconColor="white"
 							mode="contained"
 							containerColor={"green"}
 							size={18}
 						/>
 					)}
-					{data.done &&
-						data.done.rider == true &&
-						data.done.donor == false && (
-							<Button
-								mode="contained"
-								buttonColor="green"
-								textColor="white"
-								onPress={() =>
-									completeDonation(data.userId, data.key)
-								}
-								icon={"check-circle"}
-								disabled={completeLoading}
-								loading={completeLoading}
-							>
-								Confirm
-							</Button>
-						)}
-					{data.done && data.done.donor == true && (
+
+					{data.done && data.done.rider == true && (
 						<IconButton
-							icon={"account-check"}
+							icon={"racing-helmet"}
 							iconColor="white"
 							mode="contained"
 							containerColor={"green"}

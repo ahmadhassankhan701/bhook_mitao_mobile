@@ -1,21 +1,13 @@
 import { Image, StyleSheet, View } from "react-native";
-import React, {
-	useContext,
-	useEffect,
-	useRef,
-} from "react";
+import React, { useEffect, useRef } from "react";
 import { styling } from "../../../utils/Helpers/MapStyles";
 import { useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import haversine from "haversine-distance";
 import MapView, { MarkerAnimated } from "react-native-maps";
 import { Sizes } from "../../../utils/theme";
-import { AuthContext } from "../../../context/AuthContext";
 const TrackRider = ({ route }) => {
-	const { state } = useContext(AuthContext);
-	const userId = state && state.user && state.user.userId;
-	const { riderId, donorLat, donorLng } = route.params;
+	const { riderId } = route.params;
 	const [riderLocation, setRiderLocation] = useState({
 		currentLocation: {
 			lat: 31.4809172029034,
@@ -48,29 +40,12 @@ const TrackRider = ({ route }) => {
 							1000
 						);
 					}
-					// checkNotify(loc.currentLocation.lat, loc.currentLocation.lng)
 				}
 			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	// const checkNotify = async (riderLat, riderLng) => {
-	// 	let distance = haversine({ latitude: donorLat, longitude: donorLng }, { latitude: riderLat, longitude: riderLng })
-
-	// 	if (distance < 100) {
-	// 		sendPDNotification(userId, "Pickup Location", "Rider is near to pickup location")
-	// 	}
-	// }
-	// const sendPDNotification = async (parent, title, body) => {
-
-	// 	const q = query(collection(db, "notification"), where("user", "==", parent));
-	// 	const querySnapshot = await getDocs(q);
-	// 	querySnapshot.forEach((doc) => {
-	// 	  sendNotification(doc.data()?.token, title, body)
-	// 	});
-
-	// }
 	return (
 		<View
 			style={{
