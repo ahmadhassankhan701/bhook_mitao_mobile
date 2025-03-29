@@ -62,7 +62,7 @@ const OrgLoc = ({ handleChange }) => {
 						handleChange(address, upperCaseCity, pos);
 					}}
 					query={{
-						key: "AIzaSyCAukR_SsOKADb2N1YmOEyRwFGKWZTwmOo",
+						key: "",
 						language: "en",
 						types: "establishment",
 						radius: 8000,
